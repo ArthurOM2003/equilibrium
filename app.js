@@ -28,9 +28,21 @@ const initializeApp = async (user) => {
 
     // --- LÓGICA DO DARK MODE ---
     const darkModeToggle = document.getElementById('dark-mode-toggle');
-    const applyTheme = () => { if (localStorage.getItem('darkMode') === 'true') { document.body.classList.add('dark-mode'); darkModeToggle.checked = true; } else { document.body.classList.remove('dark-mode'); darkModeToggle.checked = false; } };
+    const applyTheme = () => { if (localStorage.getItem('darkMode') === 'true') { document.body.classList.add('dark-mode'); darkModeToggle.checked = true; } else { document.body.classList.remove('dark-mode'); darkModeToggle.checked = false; } updateChartColors(); };
     darkModeToggle.addEventListener('change', () => { if (darkModeToggle.checked) { document.body.classList.add('dark-mode'); localStorage.setItem('darkMode', 'true'); } else { document.body.classList.remove('dark-mode'); localStorage.setItem('darkMode', 'false'); } updateChartColors(); });
     applyTheme();
+
+    // --- LÓGICA DO MODO DE PRIVACIDADE ---
+    const privacyToggleBtn = document.getElementById('privacy-toggle-btn');
+    const applyPrivacyMode = () => {
+        const isPrivate = localStorage.getItem('privacyMode') === 'true';
+        document.body.classList.toggle('privacy-mode', isPrivate);
+    };
+    privacyToggleBtn.addEventListener('click', () => {
+        const isPrivate = document.body.classList.toggle('privacy-mode');
+        localStorage.setItem('privacyMode', isPrivate);
+    });
+    applyPrivacyMode(); // Aplica o modo ao carregar a página
 
      // --- LÓGICA DE BOAS-VINDAS E LOGOUT ---
     const welcomeMessage = document.getElementById('welcome-message');
@@ -172,13 +184,13 @@ const initializeApp = async (user) => {
             totalPortfolioValue += assetValue;
             classTotals[asset.class] = (classTotals[asset.class] || 0) + assetValue;
         });
-        summaryEl.innerHTML = `<div class="portfolio-summary-total"><span>Valor Total da Carteira</span><strong>${totalPortfolioValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong></div><div class="portfolio-summary-breakdown"></div>`;
+        summaryEl.innerHTML = `<div class="portfolio-summary-total"><span>Valor Total da Carteira</span><strong class="sensitive-data">${totalPortfolioValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong></div><div class="portfolio-summary-breakdown"></div>`;
         const breakdownContainer = summaryEl.querySelector('.portfolio-summary-breakdown');
         Object.entries(classTotals).sort(([, a], [, b]) => b - a).forEach(([className, classValue]) => {
             if (classValue > 0) {
                 const itemEl = document.createElement('div');
                 itemEl.className = 'summary-item';
-                itemEl.innerHTML = `<span>${className}</span><span>${classValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>`;
+                itemEl.innerHTML = `<span>${className}</span><span class="sensitive-data">${classValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>`;
                 breakdownContainer.appendChild(itemEl);
             }
         });
@@ -197,7 +209,7 @@ const initializeApp = async (user) => {
             const assetEl = document.createElement('div');
             assetEl.className = 'asset-item';
             assetEl.dataset.ticker = asset.ticker; 
-            assetEl.innerHTML = `<span data-label="Ticker">${asset.ticker}</span><span data-label="Classe">${asset.class}</span><span data-label="Valor Total (R$)">${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span><span data-label="Preço Atual" class="asset-price">${(asset.precoAtual || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}<span class="price-status"></span></span><span data-label="Quantidade">${asset.quantity.toLocaleString('pt-BR')}</span><span data-label="Nota">${asset.score || 0}</span><div data-label="Ações" class="asset-actions"><button class="btn-edit" data-id="${asset.id}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg></button><button class="btn-danger" data-id="${asset.id}" title="Remover"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`;
+            assetEl.innerHTML = `<span data-label="Ticker">${asset.ticker}</span><span data-label="Classe">${asset.class}</span><span data-label="Valor Total (R$)" class="sensitive-data">${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span><span data-label="Preço Atual" class="asset-price sensitive-data">${(asset.precoAtual || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}<span class="price-status"></span></span><span data-label="Quantidade">${asset.quantity.toLocaleString('pt-BR')}</span><span data-label="Nota">${asset.score || 0}</span><div data-label="Ações" class="asset-actions"><button class="btn-edit" data-id="${asset.id}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg></button><button class="btn-danger" data-id="${asset.id}" title="Remover"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`;
             assetListEl.appendChild(assetEl);
         });
         updateCurrentChart();

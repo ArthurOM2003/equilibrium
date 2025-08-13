@@ -10,6 +10,7 @@
     /* Nova Paleta de Cores (Tema Claro) */
     --c-bg: #F8F9FA;
     --c-surface: #FFFFFF;
+    --c-surface-rgb: 255, 255, 255; /* Adicionado para opacidade */
     --c-text-primary: #212529;
     --c-text-secondary: #6C757D;
     --c-border: #E9ECEF;
@@ -26,6 +27,7 @@ body.dark-mode {
     /* Nova Paleta de Cores (Tema Escuro) */
     --c-bg: #121212;
     --c-surface: #1E1E1E;
+    --c-surface-rgb: 30, 30, 30; /* Adicionado para opacidade */
     --c-text-primary: #E8EAED;
     --c-text-secondary: #9AA0A6;
     --c-border: #3C4043;
@@ -398,4 +400,68 @@ body.dark-mode .onboarding-card { background-color: var(--c-accent); color: #111
 .legal-footer a {
     color: #0056b3;
     text-decoration: underline;
+}
+
+/* 10. ESTILOS DO MODO DE PRIVACIDADE */
+.privacy-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--c-text-secondary);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.privacy-toggle-btn:hover {
+    background-color: var(--c-border);
+    color: var(--c-text-primary);
+}
+.privacy-toggle-btn .icon-eye-off {
+    display: none;
+}
+body.privacy-mode .privacy-toggle-btn .icon-eye-on {
+    display: none;
+}
+body.privacy-mode .privacy-toggle-btn .icon-eye-off {
+    display: block;
+}
+
+/* Ofusca os dados sensíveis */
+.sensitive-data {
+    transition: filter 0.2s ease-in-out;
+}
+body.privacy-mode .sensitive-data {
+    filter: blur(5px);
+    pointer-events: none; /* Impede a seleção do texto borrado */
+    user-select: none;
+}
+
+/* Overlay para os gráficos */
+.chart-privacy-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(var(--c-surface-rgb), 0.8);
+    color: var(--c-text-secondary);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    font-size: 0.9em;
+}
+.chart-privacy-overlay svg {
+    margin-bottom: 0.5rem;
+}
+body.privacy-mode .chart-wrapper canvas {
+    visibility: hidden; /* Esconde o gráfico mas mantém o espaço */
+}
+body.privacy-mode .chart-wrapper .chart-privacy-overlay {
+    display: flex;
 }

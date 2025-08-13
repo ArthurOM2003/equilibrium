@@ -33,6 +33,18 @@ const initializeAportePage = async (user) => {
         applyTheme();
     }
 
+    // --- LÓGICA DO MODO DE PRIVACIDADE ---
+    const privacyToggleBtn = document.getElementById('privacy-toggle-btn');
+    const applyPrivacyMode = () => {
+        const isPrivate = localStorage.getItem('privacyMode') === 'true';
+        document.body.classList.toggle('privacy-mode', isPrivate);
+    };
+    privacyToggleBtn.addEventListener('click', () => {
+        const isPrivate = document.body.classList.toggle('privacy-mode');
+        localStorage.setItem('privacyMode', isPrivate);
+    });
+    applyPrivacyMode(); // Aplica o modo ao carregar a página
+
     const portfolioRef = db.collection('portfolios').doc(user.uid);
     let assets = [];
     let targetAllocation = {};
@@ -91,7 +103,7 @@ const initializeAportePage = async (user) => {
             const targetPercent = targetAllocation[className] || 0;
             const statusEl = document.createElement('div');
             statusEl.className = 'status-item';
-            statusEl.innerHTML = `<div class="status-labels"><span>${className}</span><span>${currentPercent.toFixed(1)}% / <strong>${targetPercent}%</strong></span></div><div class="status-bar-container"><div class="status-bar current" style="width: ${Math.min(currentPercent, 100)}%;"></div><div class="status-bar target" style="width: ${targetPercent}%;"></div></div>`;
+            statusEl.innerHTML = `<div class="status-labels"><span>${className}</span><span class="sensitive-data">${currentPercent.toFixed(1)}% / <strong>${targetPercent}%</strong></span></div><div class="status-bar-container"><div class="status-bar current" style="width: ${Math.min(currentPercent, 100)}%;"></div><div class="status-bar target" style="width: ${targetPercent}%;"></div></div>`;
             statusContainer.appendChild(statusEl);
         });
     };
@@ -115,14 +127,14 @@ const initializeAportePage = async (user) => {
             const suggestionEl = document.createElement('div');
             suggestionEl.className = 'aporte-suggestion';
             let infoExtra = s.quantity !== null ? `<span class="class">${s.class} (~ ${s.quantity} cota(s))</span>` : `<span class="class">${s.class}</span>`;
-            suggestionEl.innerHTML = `<div class="aporte-suggestion-info"><span class="ticker">${s.ticker}</span>${infoExtra}</div><div class="aporte-suggestion-amount">${s.amount.toLocaleString('pt-BR', { style: 'currency', 'currency': 'BRL' })}</div>`;
+            suggestionEl.innerHTML = `<div class="aporte-suggestion-info"><span class="ticker">${s.ticker}</span>${infoExtra}</div><div class="aporte-suggestion-amount sensitive-data">${s.amount.toLocaleString('pt-BR', { style: 'currency', 'currency': 'BRL' })}</div>`;
             resultsContainer.appendChild(suggestionEl);
         });
 
         if (sobra >= 0.01) {
              const sobraEl = document.createElement('div');
              sobraEl.className = 'suggestion-item sobra';
-             sobraEl.innerHTML = `<div class="aporte-suggestion-info"><span class="ticker">Sobra de caixa</span><span class="class">Valor residual.</span></div><div class="aporte-suggestion-amount">${sobra.toLocaleString('pt-BR', { style: 'currency', 'currency': 'BRL' })}</div>`;
+             sobraEl.innerHTML = `<div class="aporte-suggestion-info"><span class="ticker">Sobra de caixa</span><span class="class">Valor residual.</span></div><div class="aporte-suggestion-amount sensitive-data">${sobra.toLocaleString('pt-BR', { style: 'currency', 'currency': 'BRL' })}</div>`;
             resultsContainer.appendChild(sobraEl);
         }
     };
