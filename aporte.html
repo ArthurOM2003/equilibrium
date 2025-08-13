@@ -14,7 +14,7 @@
             <div class="header-controls">
                 <a href="app.html" class="btn btn-secondary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                    <span>Voltar ao Painel</span>
+                    <span class="btn-text">Voltar ao Painel</span>
                 </a>
                 <div class="theme-switcher-wrapper">
                     <label for="dark-mode-toggle" class="theme-switcher">
@@ -40,7 +40,9 @@
                         <label for="aporte-amount">Qual o valor total do seu aporte?</label>
                         <input type="number" id="aporte-amount" placeholder="Ex: 1000.00" step="0.01" class="sensitive-data">
                     </div>
-                    <button id="calculate-aporte-btn" class="btn btn-primary btn-full-width">Calcular Aporte Ideal</button>
+                    <button id="calculate-aporte-btn" class="btn btn-primary btn-full-width">
+                        <span class="btn-text">Calcular Aporte Ideal</span>
+                    </button>
                 </div>
                 <div class="card">
                     <h2>Situação da Carteira</h2>
@@ -69,27 +71,28 @@
     </div>
 
     <footer class="legal-footer">
-    <p>
-        <strong>AVISO IMPORTANTE:</strong> As informações e ferramentas disponibilizadas neste site servem 
-        <strong>exclusivamente para fins de organização, estudo e acompanhamento pessoal de seus investimentos.</strong>
-    </p>
-    <p>
-        O conteúdo apresentado <strong>NÃO constitui e NÃO deve ser interpretado como uma recomendação, oferta,
-        análise ou conselho de compra, venda ou manutenção de qualquer valor mobiliário</strong> ou instrumento financeiro.
-        A decisão final de investimento é de responsabilidade exclusiva do usuário.
-    </p>
-    <p>
-        A performance passada não é garantia de resultados futuros. Invista com consciência.
-    </p>
-    <p>
-        <a href="/politica-de-privacidade.html">Política de Privacidade</a> | <a href="/termos-de-uso.html">Termos de Uso</a>
-    </p>
-</footer>
+        <p>
+            <strong>AVISO IMPORTANTE:</strong> As informações e ferramentas disponibilizadas neste site servem 
+            <strong>exclusivamente para fins de organização, estudo e acompanhamento pessoal de seus investimentos.</strong>
+        </p>
+        <p>
+            O conteúdo apresentado <strong>NÃO constitui e NÃO deve ser interpretado como uma recomendação, oferta,
+            análise ou conselho de compra, venda ou manutenção de qualquer valor mobiliário</strong> ou instrumento financeiro.
+            A decisão final de investimento é de responsabilidade exclusiva do usuário.
+        </p>
+        <p>
+            A performance passada não é garantia de resultados futuros. Invista com consciência.
+        </p>
+        <p>
+            <a href="/politica-de-privacidade.html">Política de Privacidade</a> | <a href="/termos-de-uso.html">Termos de Uso</a>
+        </p>
+    </footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
 
     <script src="aporte.js"></script>
+    <div id="toast-container"></div>
 </body>
 </html>

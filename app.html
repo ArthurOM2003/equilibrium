@@ -18,7 +18,9 @@
             <div class="header-controls">
                 <div class="user-info">
                     <span id="welcome-message"></span>
-                    <button id="logout-btn" class="btn btn-secondary">Sair</button>
+                    <button id="logout-btn" class="btn btn-secondary">
+                        <span class="btn-text">Sair</span>
+                    </button>
                 </div>
                 <div class="theme-switcher-wrapper">
                     <label for="dark-mode-toggle" class="theme-switcher">
@@ -36,18 +38,15 @@
             </div>
         </header>
         
-        <div id="onboarding-message" class="onboarding-card card hidden">
-            <p>👋 <strong>Bem-vindo(a)!</strong> Criámos uma carteira de exemplo para si. Sinta-se à vontade para editar ou remover os ativos para começar a sua própria gestão.</p>
-            <button id="dismiss-onboarding-btn">&times;</button>
-        </div>
-
         <div class="top-section">
             <section class="card allocation-section">
                 <h2>Definir Alocação Ideal</h2>
                 <div id="allocation-sliders"></div>
                 <div class="allocation-total">Total: <span id="target-total-display">100</span>%</div>
                 <div class="allocation-actions">
-                    <button id="save-allocation-btn" class="btn btn-primary">Salvar Meta</button>
+                    <button id="save-allocation-btn" class="btn btn-primary">
+                        <span class="btn-text">Salvar Meta</span>
+                    </button>
                     <span id="allocation-warning" class="warning-text hidden">O total deve ser 100%</span>
                 </div>
             </section>
@@ -83,11 +82,11 @@
                         <div class="portfolio-actions">
                             <button id="refresh-prices-btn" class="btn btn-secondary">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path></svg>
-                                <span>Atualizar Cotações</span>
+                                <span class="btn-text">Atualizar Cotações</span>
                             </button>
                             <button id="add-asset-btn" class="btn btn-primary">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
-                                <span>Adicionar Ativo</span>
+                                <span class="btn-text">Adicionar Ativo</span>
                             </button>
                         </div>
                     </header>
@@ -95,7 +94,7 @@
                     <div class="main-action-container">
                         <a href="aporte.html" class="btn btn-accent btn-large"> 
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v8m4-4H8m13.88-4.12a1.5 1.5 0 0 0-2.12 0l-1.88 1.88a1.5 1.5 0 0 0 0 2.12l7.12 7.12a1.5 1.5 0 0 0 2.12 0l1.88-1.88a1.5 1.5 0 0 0 0-2.12z"></path></svg>
-                            <span>Calcular Aporte Ideal</span>
+                            <span class="btn-text">Calcular Aporte Ideal</span>
                          </a>
                     </div>
 
@@ -136,8 +135,12 @@
                     <button type="button" id="add-question-in-modal-btn" class="btn btn-add-question">Adicionar Pergunta</button>
                 </div>
                 <div class="modal-actions">
-                    <button type="button" id="cancel-btn" class="btn btn-secondary">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="button" id="cancel-btn" class="btn btn-secondary">
+                        <span class="btn-text">Cancelar</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-text">Salvar</span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -148,29 +151,90 @@
             <h2 style="text-align: center;">Confirmar Saída</h2>
             <p style="text-align: center; margin: 20px 0;">Você tem certeza que deseja sair e voltar para a página inicial?</p>
             <div class="modal-actions" style="justify-content: center;">
-                <button id="cancel-logout-btn" class="btn btn-secondary">Voltar</button>
-                <button id="confirm-logout-btn" class="btn btn-danger">Confirmar Saída</button>
+                <button id="cancel-logout-btn" class="btn btn-secondary">
+                    <span class="btn-text">Voltar</span>
+                </button>
+                <button id="confirm-logout-btn" class="btn btn-danger">
+                    <span class="btn-text">Confirmar Saída</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="onboarding-modal" class="modal-overlay">
+        <div class="modal-content card">
+            <div id="onboarding-step-1" class="onboarding-step">
+                <h2>Bem-vindo(a) ao Equilibrium!</h2>
+                <p>Vamos configurar sua carteira. Este guia rápido mostrará os principais recursos da plataforma para que você comece com o pé direito.</p>
+                <div class="onboarding-nav">
+                    <div class="step-indicators">
+                        <div class="step-indicator active"></div>
+                        <div class="step-indicator"></div>
+                        <div class="step-indicator"></div>
+                    </div>
+                    <button class="btn btn-primary btn-next-step">
+                        <span class="btn-text">Próximo</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="onboarding-step-2" class="onboarding-step hidden">
+                <h2>1. Defina sua Alocação Ideal</h2>
+                <p>O primeiro passo é definir o seu "norte". Na seção "Definir Alocação Ideal", você informa à ferramenta qual a porcentagem que deseja ter em cada classe de ativo (ex: 40% em Ações, 30% em FIIs, etc.).</p>
+                <p>Essa será a sua <strong>meta</strong>.</p>
+                <div class="onboarding-nav">
+                    <button class="btn btn-secondary btn-prev-step">
+                        <span class="btn-text">Voltar</span>
+                    </button>
+                    <div class="step-indicators">
+                        <div class="step-indicator"></div>
+                        <div class="step-indicator active"></div>
+                        <div class="step-indicator"></div>
+                    </div>
+                    <button class="btn btn-primary btn-next-step">
+                        <span class="btn-text">Próximo</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="onboarding-step-3" class="onboarding-step hidden">
+                <h2>2. Cadastre Seus Ativos</h2>
+                <p>Agora, adicione os ativos que você já possui na sua carteira. Para cada um, você poderá atribuir uma "Nota de Qualidade" baseada em um checklist, ajudando a diferenciar os melhores ativos.</p>
+                <p>A ferramenta usará esses dados para comparar sua carteira <strong>atual</strong> com a sua <strong>meta</strong>.</p>
+                <div class="onboarding-nav">
+                     <button class="btn btn-secondary btn-prev-step">
+                        <span class="btn-text">Voltar</span>
+                    </button>
+                    <div class="step-indicators">
+                        <div class="step-indicator"></div>
+                        <div class="step-indicator"></div>
+                        <div class="step-indicator active"></div>
+                    </div>
+                    <button id="finish-onboarding-btn" class="btn btn-success">
+                        <span class="btn-text">Entendi, vamos começar!</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <footer class="legal-footer">
-    <p>
-        <strong>AVISO IMPORTANTE:</strong> As informações e ferramentas disponibilizadas neste site servem 
-        <strong>exclusivamente para fins de organização, estudo e acompanhamento pessoal de seus investimentos.</strong>
-    </p>
-    <p>
-        O conteúdo apresentado <strong>NÃO constitui e NÃO deve ser interpretado como uma recomendação, oferta,
-        análise ou conselho de compra, venda ou manutenção de qualquer valor mobiliário</strong> ou instrumento financeiro.
-        A decisão final de investimento é de responsabilidade exclusiva do usuário.
-    </p>
-    <p>
-        A performance passada não é garantia de resultados futuros. Invista com consciência.
-    </p>
-    <p>
-        <a href="/politica-de-privacidade.html">Política de Privacidade</a> | <a href="/termos-de-uso.html">Termos de Uso</a>
-    </p>
-</footer>
+        <p>
+            <strong>AVISO IMPORTANTE:</strong> As informações e ferramentas disponibilizadas neste site servem 
+            <strong>exclusivamente para fins de organização, estudo e acompanhamento pessoal de seus investimentos.</strong>
+        </p>
+        <p>
+            O conteúdo apresentado <strong>NÃO constitui e NÃO deve ser interpretado como uma recomendação, oferta,
+            análise ou conselho de compra, venda ou manutenção de qualquer valor mobiliário</strong> ou instrumento financeiro.
+            A decisão final de investimento é de responsabilidade exclusiva do usuário.
+        </p>
+        <p>
+            A performance passada não é garantia de resultados futuros. Invista com consciência.
+        </p>
+        <p>
+            <a href="/politica-de-privacidade.html">Política de Privacidade</a> | <a href="/termos-de-uso.html">Termos de Uso</a>
+        </p>
+    </footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth-compat.js"></script>
