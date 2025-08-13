@@ -78,7 +78,7 @@ const calcularAporteIdealComDiagnostico = (totalAporte, tickersExcluidos, assets
         const alocacoesDaRodada = [];
 
         ativosConsiderados.forEach(ativo => {
-            const pesoDoAtivo = (ativo.score > 0 ? a.score : 0) / totalScoreConsiderado;
+            const pesoDoAtivo = (ativo.score > 0 ? ativo.score : 0) / totalScoreConsiderado;
             const valorDaSobraParaAtivo = valorEntradaLoop * pesoDoAtivo;
             let valorAlocadoParaAtivo = 0;
             let cotasAdicionais = 0;
@@ -91,6 +91,7 @@ const calcularAporteIdealComDiagnostico = (totalAporte, tickersExcluidos, assets
             }
             
             if (valorAlocadoParaAtivo > 0) {
+                // CORREÇÃO AQUI: Trocado 'a.ticker' e 'a.class' por 'ativo.ticker' e 'ativo.class'
                 alocacoesDaRodada.push({ticker: ativo.ticker, class: ativo.class, amount: valorAlocadoParaAtivo, quantity: cotasAdicionais});
                 valorAlocadoNesteLoop += valorAlocadoParaAtivo;
             }
