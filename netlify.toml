@@ -1,0 +1,11 @@
+# Configurações de build do Netlify
+[build]
+  # Comando de build (não precisamos de um, mas é bom ter)
+  command = "echo 'Build command ran'"
+  # Pasta que será publicada (a raiz do projeto)
+  publish = "."
+
+# Configurações das funções
+[functions]
+  # Diretório onde as funções estão localizadas
+  directory = "netlify/functions"
