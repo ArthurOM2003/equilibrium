@@ -4,13 +4,30 @@ import fetch from 'node-fetch';
 // A chave da API será lida das variáveis de ambiente seguras do Netlify
 const API_TOKEN = process.env.BRAPI_TOKEN;
 
+// Cabeçalhos de permissão (CORS) para permitir que o seu site chame esta função
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS'
+};
+
 export const handler = async (event) => {
+  // Responde imediatamente a pedidos de "pre-flight" do CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: corsHeaders,
+      body: JSON.stringify({ message: 'OPTIONS request successful' })
+    };
+  }
+
   // Pega o 'ticker' que vem da URL
   const ticker = event.queryStringParameters.ticker;
 
   if (!ticker) {
     return {
       statusCode: 400,
+      headers: corsHeaders,
       body: JSON.stringify({ error: "O parâmetro 'ticker' é obrigatório." }),
     };
   }
@@ -18,6 +35,7 @@ export const handler = async (event) => {
   if (!API_TOKEN) {
     return {
       statusCode: 500,
+      headers: corsHeaders,
       body: JSON.stringify({ error: "Chave da API não configurada no servidor." }),
     };
   }
@@ -31,17 +49,20 @@ export const handler = async (event) => {
     if (data.results && data.results[0] && data.results[0].regularMarketPrice) {
       return {
         statusCode: 200,
+        headers: corsHeaders,
         body: JSON.stringify({ price: data.results[0].regularMarketPrice }),
       };
     } else {
       return {
         statusCode: 404,
+        headers: corsHeaders,
         body: JSON.stringify({ error: `Cotação não encontrada para o ticker: ${ticker}` }),
       };
     }
   } catch (error) {
     return {
       statusCode: 500,
+      headers: corsHeaders,
       body: JSON.stringify({ error: `Erro ao comunicar com a API da Brapi: ${error.message}` }),
     };
   }
