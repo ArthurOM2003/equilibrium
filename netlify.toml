@@ -1,11 +1,9 @@
-# Configurações de build do Netlify
+# netlify.toml
+
 [build]
-  # Comando de build (não precisamos de um, mas é bom ter)
-  command = "echo 'Build command ran'"
-  # Pasta que será publicada (a raiz do projeto)
+  # O comando de build da UI pode ser movido para cá
+  command = "cp firebase-config.template.js firebase-config.js && sed -i '...' && sed -i '...'" # (comando completo)
   publish = "."
 
-# Configurações das funções
 [functions]
-  # Diretório onde as funções estão localizadas
   directory = "netlify/functions"

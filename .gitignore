@@ -7,8 +7,8 @@ yarn-error.log*
 firebase-debug.log*
 firebase-debug.*.log*
 
-#firebaseconfig 
-
+# Ignorar o arquivo de configuração local com as chaves reais
+firebase-config.js
 
 # Firebase cache
 .firebase/
