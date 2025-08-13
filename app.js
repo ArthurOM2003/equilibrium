@@ -208,7 +208,7 @@ const initializeApp = async (user) => {
     };
 
     const atualizarCotacoes = async () => {
-        const functionUrl = '/.netlify/functions/getquote';
+        const functionUrl = 'https://carteirainvestimentos.netlify.app/.netlify/functions/getQuote';
         refreshPricesBtn.disabled = true;
         const btnSpan = refreshPricesBtn.querySelector('span');
         const assetsToUpdate = assets.filter(asset => asset.class === 'Ações Nacionais' || asset.class === 'Fundos Imobiliários');
