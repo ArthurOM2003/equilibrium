@@ -54,8 +54,6 @@ const initializeAportePage = async (user) => {
     const resultsContainer = document.getElementById('aporte-results-container');
     const statusContainer = document.getElementById('status-carteira');
     const exclusaoContainer = document.getElementById('exclusao-temporaria-container');
-    
-    const CLASSES_INTEIRAS = ['Ações Nacionais', 'Fundos Imobiliários'];
 
     const popularCheckboxesDeExclusao = () => {
         exclusaoContainer.innerHTML = '';
@@ -97,151 +95,8 @@ const initializeAportePage = async (user) => {
             statusContainer.appendChild(statusEl);
         });
     };
-    
-    const calcularAporteIdealComDiagnostico = (totalAporte, tickersExcluidos) => {
-        const diagnostico = {};
-        diagnostico.passo1_entrada = { totalAporte, tickersExcluidos: [...tickersExcluidos], totalAtivos: assets.length };
 
-        const ativosConsiderados = assets.filter(a => !tickersExcluidos.has(a.ticker));
-        if (ativosConsiderados.length === 0) {
-            return { sugestoes: [], sobra: totalAporte };
-        }
-        diagnostico.passo2_ativosConsiderados = { quantidade: ativosConsiderados.length, lista: ativosConsiderados.map(a => a.ticker) };
-
-        const valorAtualConsiderado = ativosConsiderados.reduce((sum, a) => sum + (a.quantity * a.precoAtual), 0);
-        const valorFinalConsiderado = valorAtualConsiderado + totalAporte;
-        
-        const analiseDeClasses = Object.keys(targetAllocation)
-            .map(className => {
-                const ativosDaClasse = ativosConsiderados.filter(a => a.class === className);
-                if (ativosDaClasse.length === 0) return null;
-                const valorAtualDaClasse = ativosDaClasse.reduce((sum, a) => sum + (a.quantity * a.precoAtual), 0);
-                const valorIdealDaClasse = (targetAllocation[className] / 100) * valorFinalConsiderado;
-                const necessidade = Math.max(0, valorIdealDaClasse - valorAtualDaClasse);
-                return { classe: className, necessidadeEmReais: necessidade };
-            }).filter(Boolean);
-        
-        diagnostico.passo3_analiseDeClasses = analiseDeClasses;
-
-        const classesComNecessidade = analiseDeClasses.filter(c => c.necessidadeEmReais > 0);
-        const totalNecessidade = classesComNecessidade.reduce((sum, c) => sum + c.necessidadeEmReais, 0);
-        let sugestoesProcessadas = [];
-
-        if (totalNecessidade > 0) {
-            const sugestoesAgregadas = {};
-            classesComNecessidade.forEach(classeInfo => {
-                const proporcaoDaNecessidade = classeInfo.necessidadeEmReais / totalNecessidade;
-                const aporteParaClasse = totalAporte * proporcaoDaNecessidade;
-                const ativosDaClasse = ativosConsiderados.filter(a => a.class === classeInfo.classe);
-                const totalScoreDaClasse = ativosDaClasse.reduce((sum, ativo) => sum + (ativo.score > 0 ? ativo.score : 0), 1);
-                ativosDaClasse.forEach(ativo => {
-                    const pesoDoAtivo = (ativo.score > 0 ? ativo.score : 0) / totalScoreDaClasse;
-                    const valorParaAtivo = aporteParaClasse * pesoDoAtivo;
-                    sugestoesAgregadas[ativo.ticker] = (sugestoesAgregadas[ativo.ticker] || 0) + valorParaAtivo;
-                });
-            });
-            diagnostico.passo4_distribuicaoInicial = { ...sugestoesAgregadas };
-
-            sugestoesProcessadas = Object.entries(sugestoesAgregadas).map(([ticker, amount]) => {
-                const asset = ativosConsiderados.find(a => a.ticker === ticker);
-                let quantidade = null;
-                let valorReal = amount;
-                if (CLASSES_INTEIRAS.includes(asset.class) && asset.precoAtual > 0) {
-                    quantidade = Math.floor(amount / asset.precoAtual);
-                    valorReal = quantidade * asset.precoAtual;
-                }
-                return { ticker, class: asset.class, amount: valorReal, quantity: quantidade };
-            });
-        }
-        
-        let sobraCorrente = totalAporte - sugestoesProcessadas.reduce((sum, s) => sum + s.amount, 0);
-        diagnostico.passo5_sobraAntesDoLoop = sobraCorrente;
-        diagnostico.passo6_loopDeSobra = [];
-
-        const totalScoreConsiderado = ativosConsiderados.reduce((sum, a) => sum + (a.score > 0 ? a.score : 0), 0);
-
-        while (sobraCorrente > 1.00 && totalScoreConsiderado > 0) {
-            const valorEntradaLoop = sobraCorrente;
-            let valorAlocadoNesteLoop = 0;
-            const alocacoesDaRodada = [];
-
-            ativosConsiderados.forEach(ativo => {
-                const pesoDoAtivo = (ativo.score > 0 ? ativo.score : 0) / totalScoreConsiderado;
-                const valorDaSobraParaAtivo = valorEntradaLoop * pesoDoAtivo;
-                let valorAlocadoParaAtivo = 0;
-                let cotasAdicionais = 0;
-
-                if (CLASSES_INTEIRAS.includes(ativo.class) && ativo.precoAtual > 0) {
-                    cotasAdicionais = Math.floor(valorDaSobraParaAtivo / ativo.precoAtual);
-                    if (cotasAdicionais > 0) valorAlocadoParaAtivo = cotasAdicionais * ativo.precoAtual;
-                } else if (valorDaSobraParaAtivo > 0.01) {
-                    valorAlocadoParaAtivo = valorDaSobraParaAtivo;
-                }
-                
-                if (valorAlocadoParaAtivo > 0) {
-                    alocacoesDaRodada.push({ticker: ativo.ticker, class: ativo.class, amount: valorAlocadoParaAtivo, quantity: cotasAdicionais});
-                    valorAlocadoNesteLoop += valorAlocadoParaAtivo;
-                }
-            });
-            
-            if (valorAlocadoNesteLoop < 0.01) {
-                diagnostico.passo6_loopDeSobra.push({rodada: diagnostico.passo6_loopDeSobra.length + 1, motivo: "Loop encerrado, sobra insuficiente."});
-                break;
-            }
-
-            alocacoesDaRodada.forEach(alocacao => {
-                const sugestaoExistente = sugestoesProcessadas.find(s => s.ticker === alocacao.ticker);
-                if(sugestaoExistente){
-                    sugestaoExistente.amount += alocacao.amount;
-                    if(sugestaoExistente.quantity !== null && alocacao.quantity > 0) sugestaoExistente.quantity += alocacao.quantity;
-                } else {
-                    sugestoesProcessadas.push(alocacao);
-                }
-            });
-            
-            sobraCorrente = valorEntradaLoop - valorAlocadoNesteLoop;
-            diagnostico.passo6_loopDeSobra.push({rodada: diagnostico.passo6_loopDeSobra.length + 1, entrada: valorEntradaLoop, alocado: valorAlocadoNesteLoop, novaSobra: sobraCorrente});
-        }
-
-        let sugestoesFinais = [...sugestoesProcessadas];
-        let valorARedistribuir = 0;
-        const tickersInvalidos = new Set();
-
-        sugestoesFinais.forEach(sugestao => {
-            const necessidadeDaClasse = analiseDeClasses.find(c => c.classe === sugestao.class)?.necessidadeEmReais || 0;
-            if (necessidadeDaClasse === 0) {
-                valorARedistribuir += sugestao.amount;
-                tickersInvalidos.add(sugestao.ticker);
-            }
-        });
-
-        if (valorARedistribuir > 0) {
-            diagnostico.passo7_filtroDeSeguranca = { motivo: `Sugestões para classes balanceadas (${[...tickersInvalidos].join(', ')}) removidas.`, valor: valorARedistribuir };
-            
-            sugestoesFinais = sugestoesFinais.filter(s => !tickersInvalidos.has(s.ticker));
-            const totalLegitimo = sugestoesFinais.reduce((sum, s) => sum + s.amount, 0);
-
-            if (totalLegitimo > 0) {
-                sugestoesFinais.forEach(s => {
-                    const proporcao = s.amount / totalLegitimo;
-                    s.amount += valorARedistribuir * proporcao;
-                });
-            }
-        }
-
-        const totalSugeridoFinal = sugestoesFinais.reduce((sum, s) => sum + s.amount, 0);
-        const sobraFinal = totalAporte - totalSugeridoFinal;
-
-        diagnostico.passo8_resultadoFinal = { sugestoes: sugestoesFinais, sobra: sobraFinal };
-
-        console.log("--- DIAGNÓSTICO COMPLETO DO APORTE (v11 - LOOP + FILTRO) ---");
-        console.log(diagnostico);
-        console.table(analiseDeClasses.map(c => ({...c, necessidadeEmReais: c.necessidadeEmReais.toFixed(2)})));
-        console.log("--------------------------------------");
-
-        return { sugestoes: sugestoesFinais.filter(s => s.amount >= 0.01), sobra: sobraFinal };
-    };
-
+    // A função de display continua a mesma, ela não precisa de saber de onde vêm os resultados.
     const displayAporteResults = (result) => {
         const { sugestoes, sobra } = result;
         resultsContainer.innerHTML = '';
@@ -272,7 +127,8 @@ const initializeAportePage = async (user) => {
         }
     };
     
-    calculateBtn.addEventListener('click', () => {
+    // O Event Listener agora chama a função no backend
+    calculateBtn.addEventListener('click', async () => {
         const totalAporte = parseFloat(amountInput.value);
         if (isNaN(totalAporte) || totalAporte <= 0) {
             alert('Por favor, insira um valor de aporte válido.');
@@ -282,19 +138,46 @@ const initializeAportePage = async (user) => {
         calculateBtn.classList.add('loading');
         calculateBtn.disabled = true;
 
-        // Pequeno delay para a animação do spinner ser visível
-        setTimeout(() => {
-            const tickersExcluidos = new Set();
-            document.querySelectorAll('.penalize-asset-checkbox:checked').forEach(checkbox => {
-                tickersExcluidos.add(checkbox.value);
+        const tickersExcluidos = [];
+        document.querySelectorAll('.penalize-asset-checkbox:checked').forEach(checkbox => {
+            tickersExcluidos.push(checkbox.value);
+        });
+
+        // Prepara os dados para enviar para o servidor
+        const payload = {
+            totalAporte,
+            tickersExcluidos,
+            assets,
+            targetAllocation
+        };
+
+        try {
+            // Chama a nova função serverless
+            const response = await fetch('/.netlify/functions/calculateAporte', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
             });
-            
-            const result = calcularAporteIdealComDiagnostico(totalAporte, tickersExcluidos); 
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Ocorreu um erro no servidor.');
+            }
+
+            const result = await response.json();
             displayAporteResults(result);
 
+        } catch (error) {
+            console.error("Erro ao calcular aporte:", error);
+            alert(`Não foi possível calcular o aporte: ${error.message}`);
+            // Limpa os resultados em caso de erro
+            resultsContainer.innerHTML = ''; 
+        } finally {
             calculateBtn.classList.remove('loading');
             calculateBtn.disabled = false;
-        }, 300);
+        }
     });
 
     displayPortfolioStatus();
