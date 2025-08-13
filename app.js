@@ -186,7 +186,7 @@ const initializeApp = async (user) => {
         }
 
         Object.entries(classTotals).sort(([, a], [, b]) => b - a).forEach(([className, classValue]) => { 
-            if (classValue >= 0) { // Alterado para >= 0 para mostrar mesmo se o valor for 0
+            if (classValue >= 0) {
                 const itemEl = document.createElement('div'); 
                 itemEl.className = 'summary-item'; 
                 itemEl.innerHTML = `<span>${className}</span><span class="sensitive-data">${classValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>`; 
@@ -269,6 +269,18 @@ const initializeApp = async (user) => {
         setButtonLoading(refreshPricesBtn, false);
     };
     
+    // ================== FUNÇÃO ADICIONADA DE VOLTA ==================
+    const renderChecklistInModal = (questions) => {
+        checklistItemsEl.innerHTML = '';
+        questions.forEach(q => {
+            const item = document.createElement('div');
+            item.className = 'checklist-item';
+            item.innerHTML = `<span class="question-text">${q.text}</span><div class="quality-slider-wrapper"><span class="slider-label no">Não</span><input type="range" class="quality-slider" min="0" max="1" value="0" data-id="${q.id}"><span class="slider-label yes">Sim</span></div>`;
+            checklistItemsEl.appendChild(item);
+        });
+    };
+    // ================================================================
+
     const openModal = (asset = null) => {
         assetForm.reset();
         document.getElementById('asset-id').value = '';
@@ -290,7 +302,7 @@ const initializeApp = async (user) => {
             }
         } else {
             document.getElementById('modal-title').textContent = 'Adicionar Novo Ativo';
-            renderChecklistInModal(nationalStockChecklistQuestions); // Padrão
+            renderChecklistInModal(nationalStockChecklistQuestions);
         }
         modal.classList.add('active');
     };
