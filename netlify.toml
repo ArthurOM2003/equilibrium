@@ -1,9 +1,9 @@
-# netlify.toml
+# Conteúdo corrigido para o arquivo netlify.toml
 
 [build]
-  # O comando de build da UI pode ser movido para cá
-  command = "cp firebase-config.template.js firebase-config.js && sed -i '...' && sed -i '...'" # (comando completo)
+  # Comando de build corrigido com o separador '#' e aspas simples para o TOML
+  command = 'cp firebase-config.template.js firebase-config.js && sed -i "s#__FIREBASE_API_KEY__#$FIREBASE_API_KEY#g" firebase-config.js && sed -i "s#__PUBLIC_FIREBASE_AUTH_DOMAIN__#$PUBLIC_FIREBASE_AUTH_DOMAIN#g" firebase-config.js && sed -i "s#__PUBLIC_FIREBASE_PROJECT_ID__#$PUBLIC_FIREBASE_PROJECT_ID#g" firebase-config.js && sed -i "s#__PUBLIC_FIREBASE_STORAGE_BUCKET__#$PUBLIC_FIREBASE_STORAGE_BUCKET#g" firebase-config.js && sed -i "s#__PUBLIC_FIREBASE_MESSAGING_SENDER_ID__#$PUBLIC_FIREBASE_MESSAGING_SENDER_ID#g" firebase-config.js && sed -i "s#__PUBLIC_FIREBASE_APP_ID__#$PUBLIC_FIREBASE_APP_ID#g" firebase-config.js'
   publish = "."
 
 [functions]
-  directory = "netlify/functions" 
+  directory = "netlify/functions"
