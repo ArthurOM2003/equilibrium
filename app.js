@@ -1,16 +1,12 @@
 // ** SUA CONFIGURAÇÃO DO FIREBASE VAI AQUI **
-const firebaseConfig = {
-  apiKey: "AIzaSyByPGYoW_GPRstNFx5b1D5qa_qT-VoFQQ0",
-  authDomain: "minha-carteira-app-f8658.firebaseapp.com",
-  projectId: "minha-carteira-app-f8658",
-  storageBucket: "minha-carteira-app-f8658.appspot.com",
-  messagingSenderId: "802101066161",
-  appId: "1:802101066161:web:f9d4f591c2f89a54422590"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+// Função para buscar a configuração do Firebase de forma segura
+async function getFirebaseConfig() {
+  const response = await fetch('/.netlify/functions/getFirebaseConfig');
+  if (!response.ok) {
+    throw new Error('Não foi possível carregar a configuração do Firebase.');
+  }
+  return response.json();
+}
 
 auth.onAuthStateChanged(user => {
     if (user) {
