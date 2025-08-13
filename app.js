@@ -187,7 +187,7 @@ const initializeApp = async (user) => {
 
 const atualizarCotacoes = async () => {
     // CORREÇÃO: A URL agora está com 'getquote' em minúsculo para corresponder ao nome do arquivo.
-    const functionUrl = '/.netlify/functions/getquote';
+    const functionUrl = 'https://carteirainvestimentos.netlify.app/.netlify/functions/getQuote';
 
     refreshPricesBtn.disabled = true;
     const btnSpan = refreshPricesBtn.querySelector('span');
