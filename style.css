@@ -145,7 +145,7 @@ body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode .page-ti
 .bottom-section { grid-template-columns: 340px 1fr; }
 .left-panel, .right-panel { display: flex; flex-direction: column; }
 .full-height { height: 100%; }
-.chart-wrapper { position: relative; flex-grow: 1; min-height: 200px; margin-top: 20px;}
+.chart-wrapper { position: relative; height: 280px; /* Altura fixa para evitar crescimento infinito */ min-height: 200px; margin-top: 20px;}
 .allocation-section h2, .portfolio-header h2, .chart-section-top h2, .chart-section-side h2 { border-bottom: 2px solid var(--c-accent); padding-bottom: 8px; }
 .portfolio-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; }
 .main-action-container { padding: 16px 0; border-bottom: 1px solid var(--c-border); margin-bottom: 8px; }
