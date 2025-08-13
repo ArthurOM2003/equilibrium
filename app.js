@@ -26,14 +26,103 @@ const initializeApp = async (user) => {
     if (document.body.hasAttribute('data-app-initialized')) return;
     document.body.setAttribute('data-app-initialized', 'true');
 
-    // --- LÓGICA DO DARK MODE ---
+    // ======================= INÍCIO DAS CORREÇÕES =======================
+
+    // Declarações de variáveis e referências movidas para o topo para melhor escopo.
+    let assets = [];
+    let savedTargetAllocation = {};
+    let stagedTargetAllocation = {};
+    let nextAssetId = 1;
+    let currentPortfolioChart, targetPortfolioChart;
+
+    const welcomeMessage = document.getElementById('welcome-message');
+    const logoutBtn = document.getElementById('logout-btn');
+    const logoutModal = document.getElementById('logout-modal');
+    const confirmLogoutBtn = document.getElementById('confirm-logout-btn');
+    const cancelLogoutBtn = document.getElementById('cancel-logout-btn');
     const darkModeToggle = document.getElementById('dark-mode-toggle');
-    const applyTheme = () => { if (localStorage.getItem('darkMode') === 'true') { document.body.classList.add('dark-mode'); darkModeToggle.checked = true; } else { document.body.classList.remove('dark-mode'); darkModeToggle.checked = false; } updateChartColors(); };
-    darkModeToggle.addEventListener('change', () => { if (darkModeToggle.checked) { document.body.classList.add('dark-mode'); localStorage.setItem('darkMode', 'true'); } else { document.body.classList.remove('dark-mode'); localStorage.setItem('darkMode', 'false'); } updateChartColors(); });
-    applyTheme();
+    const privacyToggleBtn = document.getElementById('privacy-toggle-btn');
+    const assetListEl = document.getElementById('asset-list');
+    const modal = document.getElementById('asset-modal');
+    const assetForm = document.getElementById('asset-form');
+    const addAssetBtn = document.getElementById('add-asset-btn');
+    const refreshPricesBtn = document.getElementById('refresh-prices-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const allocationSlidersEl = document.getElementById('allocation-sliders');
+    const assetClassSelect = document.getElementById('asset-class');
+    const checklistContainer = document.getElementById('dynamic-checklist-container');
+    const checklistItemsEl = document.getElementById('checklist-items');
+    const saveAllocationBtn = document.getElementById('save-allocation-btn');
+    const allocationWarning = document.getElementById('allocation-warning');
+    const targetTotalDisplay = document.getElementById('target-total-display');
+
+    // As funções de ajuda dos gráficos foram movidas para ANTES de serem usadas.
+    const getChartOptions = () => ({
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    color: getComputedStyle(document.body).getPropertyValue('--c-text-secondary'),
+                    font: { family: "'Inter', sans-serif" }
+                }
+            },
+            tooltip: {
+                backgroundColor: getComputedStyle(document.body).getPropertyValue('--c-surface'),
+                titleColor: getComputedStyle(document.body).getPropertyValue('--c-text-primary'),
+                bodyColor: getComputedStyle(document.body).getPropertyValue('--c-text-secondary'),
+                boxPadding: 8,
+                cornerRadius: 4,
+                callbacks: {
+                    label: function(context) {
+                        return `${context.label}: ${context.parsed.toFixed(1)}%`;
+                    }
+                }
+            }
+        }
+    });
+
+    const updateChartColors = () => {
+        const newOptions = getChartOptions();
+        if (currentPortfolioChart) {
+            currentPortfolioChart.options = newOptions;
+            currentPortfolioChart.update('none');
+        }
+        if (targetPortfolioChart) {
+            targetPortfolioChart.options = newOptions;
+            targetPortfolioChart.update('none');
+        }
+    };
+
+    // --- LÓGICA DO DARK MODE (AJUSTADA) ---
+    const applyTheme = () => {
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            darkModeToggle.checked = true;
+        } else {
+            document.body.classList.remove('dark-mode');
+            darkModeToggle.checked = false;
+        }
+        // A chamada de updateChartColors() foi REMOVIDA daqui, pois os gráficos ainda não existem.
+    };
+    darkModeToggle.addEventListener('change', () => {
+        if (darkModeToggle.checked) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', 'true');
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', 'false');
+        }
+        updateChartColors(); // A chamada permanece aqui, pois ocorre após a interação do usuário.
+    });
+    
+    // ======================= FIM DAS CORREÇÕES =======================
+
+    applyTheme(); // Aplica o tema ao carregar a página
 
     // --- LÓGICA DO MODO DE PRIVACIDADE ---
-    const privacyToggleBtn = document.getElementById('privacy-toggle-btn');
     const applyPrivacyMode = () => {
         const isPrivate = localStorage.getItem('privacyMode') === 'true';
         document.body.classList.toggle('privacy-mode', isPrivate);
@@ -45,12 +134,7 @@ const initializeApp = async (user) => {
     applyPrivacyMode(); // Aplica o modo ao carregar a página
 
      // --- LÓGICA DE BOAS-VINDAS E LOGOUT ---
-    const welcomeMessage = document.getElementById('welcome-message');
     welcomeMessage.textContent = `Bem-vindo(a), ${user.displayName || user.email.split('@')[0]}!`;
-    const logoutBtn = document.getElementById('logout-btn');
-    const logoutModal = document.getElementById('logout-modal');
-    const confirmLogoutBtn = document.getElementById('confirm-logout-btn');
-    const cancelLogoutBtn = document.getElementById('cancel-logout-btn');
     logoutBtn.addEventListener('click', () => logoutModal.classList.add('active'));
     confirmLogoutBtn.addEventListener('click', () => auth.signOut());
     cancelLogoutBtn.addEventListener('click', () => logoutModal.classList.remove('active'));
@@ -58,8 +142,6 @@ const initializeApp = async (user) => {
     
     // --- MODELO DE DADOS E FUNÇÕES DO FIREBASE ---
     const portfolioRef = db.collection('portfolios').doc(user.uid);
-    let assets = [];
-    let savedTargetAllocation = {};
     
     const loadDataFromFirebase = async () => {
         try {
@@ -110,9 +192,6 @@ const initializeApp = async (user) => {
     
     const saveAssets = saveDataToFirebase;
     const saveTarget = saveDataToFirebase;
-
-    // --- DECLARAÇÃO DE VARIÁVEIS E REFERÊNCIAS ---
-    let stagedTargetAllocation = {};
     
     const nationalStockChecklistQuestions = [
         { id: 1, text: 'Dívida Líquida é negativa ou DL/PL < 50%?' }, { id: 2, text: 'ROE (Retorno sobre Patrimônio) histórico acima de 5%?' }, { id: 3, text: 'Dívida líquida é menor que o lucro líquido dos últimos 12 meses?' }, { id: 4, text: 'Tem crescimento de receitas ou lucro > 5% a.a. nos últimos 5 anos?' }, { id: 5, text: 'Possui um histórico consistente de pagamento de dividendos?' }, { id: 6, text: 'Investe consistentemente em pesquisa e inovação?' }, { id: 7, text: 'O setor é perene (não está se tornando obsoleto)?' }, { id: 8, text: 'Está negociada com um P/VP (Preço/Valor Patrimonial) abaixo de 5?' }, { id: 9, text: 'Teve lucro operacional no último exercício (ano)?' }, { id: 10, text: 'Tem mais de 30 anos de mercado (desde a fundação)?' }, { id: 11, text: 'É LÍDER (1º lugar) nacional ou mundial no seu setor?' }, { id: 12, text: 'O setor de atuação da empresa tem mais de 100 anos?' }, { id: 13, text: 'É considerada uma BLUE CHIP (empresa de grande porte e sólida)?' }, { id: 14, text: 'A empresa possui uma gestão bem avaliada pelo mercado?' }, { id: 15, text: 'É livre de escândalos de corrupção recentes?' }, { id: 16, text: 'É livre de controle estatal ou concentração em um único cliente?' }, { id: 17, text: 'O P/L (Preço/Lucro) da empresa está abaixo de 30?' }
@@ -127,22 +206,6 @@ const initializeApp = async (user) => {
         { id: 6, text: 'O Dividend Yield do fundo foi superior a 2,5% nos últimos 12 meses?' },
         { id: 7, text: 'O foco do ETF está em setores considerados perenes e confiáveis (ex: financeiro, saúde, consumo básico, utilidades)?' }
     ];
-
-    let nextAssetId = 1;
-    const assetListEl = document.getElementById('asset-list');
-    const modal = document.getElementById('asset-modal');
-    const assetForm = document.getElementById('asset-form');
-    const addAssetBtn = document.getElementById('add-asset-btn');
-    const refreshPricesBtn = document.getElementById('refresh-prices-btn');
-    const cancelBtn = document.getElementById('cancel-btn');
-    const allocationSlidersEl = document.getElementById('allocation-sliders');
-    const assetClassSelect = document.getElementById('asset-class');
-    const checklistContainer = document.getElementById('dynamic-checklist-container');
-    const checklistItemsEl = document.getElementById('checklist-items');
-    const saveAllocationBtn = document.getElementById('save-allocation-btn');
-    const allocationWarning = document.getElementById('allocation-warning');
-    const targetTotalDisplay = document.getElementById('target-total-display');
-    let currentPortfolioChart, targetPortfolioChart;
     
     // --- FUNÇÕES ---
     const showToast = (message, type = 'success') => {
@@ -155,10 +218,13 @@ const initializeApp = async (user) => {
         setTimeout(() => toast.remove(), 3000);
     };
 
-    const getChartOptions = () => ({ responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'top', labels: { color: getComputedStyle(document.body).getPropertyValue('--c-text-secondary'), font: { family: "'Inter', sans-serif" } } }, tooltip: { backgroundColor: getComputedStyle(document.body).getPropertyValue('--c-surface'), titleColor: getComputedStyle(document.body).getPropertyValue('--c-text-primary'), bodyColor: getComputedStyle(document.body).getPropertyValue('--c-text-secondary'), boxPadding: 8, cornerRadius: 4, callbacks: { label: function(context) { return `${context.label}: ${context.parsed.toFixed(1)}%`; } } } } });
-    const initCharts = () => { const currentCtx = document.getElementById('currentPortfolioChart').getContext('2d'); currentPortfolioChart = new Chart(currentCtx, { type: 'doughnut', options: getChartOptions() }); const targetCtx = document.getElementById('targetPortfolioChart').getContext('2d'); targetPortfolioChart = new Chart(targetCtx, { type: 'doughnut', options: getChartOptions() }); };
-    const updateChartColors = () => { const newOptions = getChartOptions(); if (currentPortfolioChart) { currentPortfolioChart.options = newOptions; currentPortfolioChart.update('none'); } if (targetPortfolioChart) { targetPortfolioChart.options = newOptions; targetPortfolioChart.update('none'); } };
-    
+    const initCharts = () => {
+        const currentCtx = document.getElementById('currentPortfolioChart').getContext('2d');
+        currentPortfolioChart = new Chart(currentCtx, { type: 'doughnut', options: getChartOptions() });
+        const targetCtx = document.getElementById('targetPortfolioChart').getContext('2d');
+        targetPortfolioChart = new Chart(targetCtx, { type: 'doughnut', options: getChartOptions() });
+    };
+
     const updateChartData = (chart, labels, data) => {
         const chartColors = ['#1D3557', '#00A896', '#457B9D', '#A8DADC', '#F1FAEE', '#E63946'];
         chart.data.labels = labels;
@@ -479,7 +545,7 @@ const initializeApp = async (user) => {
             assetClassSelect.add(new Option(key, key));
         });
 
-        initCharts();
+        initCharts(); // Agora esta função é chamada após as helpers serem declaradas
         createAllocationSliders();
         validateAndSyncAllocationUI();
         renderAssets();
