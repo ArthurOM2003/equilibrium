@@ -374,3 +374,28 @@ body.dark-mode .onboarding-card { background-color: var(--c-accent); color: #111
 .price-status.success::before { content: '✔'; color: var(--c-success); font-weight: bold; }
 .price-status.failure::before { content: '✖'; color: var(--c-danger); font-weight: bold; }
 @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* ============================================= */
+/* ==       AVISOS LEGAIS (DISCLAIMER)        == */
+/* ============================================= */
+
+.legal-footer {
+    background-color: #f8f9fa; /* Um cinza muito claro */
+    color: #6c757d; /* Um cinza escuro para o texto */
+    text-align: center;
+    padding: 25px 15px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-top: 1px solid #e9ecef; /* Uma linha sutil no topo */
+    margin-top: 40px; /* Garante um espaço acima do rodapé */
+}
+
+.legal-footer strong {
+    color: #495057; /* Destaca o texto em negrito */
+    font-weight: 600;
+}
+
+.legal-footer a {
+    color: #0056b3;
+    text-decoration: underline;
+}
