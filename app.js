@@ -55,15 +55,6 @@ const initializeApp = async (user) => {
             if (doc.exists) {
                 const data = doc.data();
                 assets = data.assets || [];
-                assets.forEach(asset => {
-                    asset.id = Number(asset.id);
-                    if (asset.precoMedio) {
-                        if (!asset.precoAtual) {
-                           asset.precoAtual = asset.precoMedio;
-                        }
-                        delete asset.precoMedio;
-                    }
-                });
                 savedTargetAllocation = data.target || {};
             } else {
                 console.log("Novo usuário! Criando carteira de exemplo.");
@@ -78,7 +69,6 @@ const initializeApp = async (user) => {
                 assets = exampleData.assets;
                 savedTargetAllocation = exampleData.target;
 
-                // --- LÓGICA DA MENSAGEM DE ONBOARDING ---
                 const onboardingMessage = document.getElementById('onboarding-message');
                 if (onboardingMessage) {
                     onboardingMessage.classList.remove('hidden');
@@ -90,24 +80,19 @@ const initializeApp = async (user) => {
                         setTimeout(() => onboardingMessage.classList.add('hidden'), 500);
                     });
                 }
-                // --- FIM DA LÓGICA DA MENSAGEM DE ONBOARDING ---
             }
         } catch (error) {
             console.error("Erro Crítico ao carregar dados do Firestore:", error);
-            alert("Não foi possível carregar os dados da sua carteira. Por favor, recarregue a página.");
+            showToast("Não foi possível carregar os dados da sua carteira.", "error");
         }
     };
 
     const saveDataToFirebase = async () => {
         try {
-            const assetsToSave = assets.map(asset => {
-                const { precoMedio, ...assetSemPrecoMedio } = asset;
-                return assetSemPrecoMedio;
-            });
-            await portfolioRef.set({ assets: assetsToSave, target: savedTargetAllocation });
+            await portfolioRef.set({ assets: assets, target: savedTargetAllocation });
         } catch (error) {
             console.error("Erro ao salvar dados:", error);
-            alert("Não foi possível salvar suas alterações.");
+            showToast("Não foi possível salvar suas alterações.", "error");
         }
     };
     
@@ -132,7 +117,6 @@ const initializeApp = async (user) => {
     ];
 
     let nextAssetId = 1;
-    const STOCK_CLASSES = ['Ações Nacionais', 'Ações Internacionais'];
     const assetListEl = document.getElementById('asset-list');
     const modal = document.getElementById('asset-modal');
     const assetForm = document.getElementById('asset-form');
@@ -151,6 +135,7 @@ const initializeApp = async (user) => {
     // --- FUNÇÕES ---
     const showToast = (message, type = 'success') => {
         const container = document.getElementById('toast-container');
+        if (!container) return;
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         toast.textContent = message;
@@ -161,9 +146,21 @@ const initializeApp = async (user) => {
     const getChartOptions = () => ({ responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'top', labels: { color: getComputedStyle(document.body).getPropertyValue('--c-text-secondary'), font: { family: "'Inter', sans-serif" } } }, tooltip: { backgroundColor: getComputedStyle(document.body).getPropertyValue('--c-surface'), titleColor: getComputedStyle(document.body).getPropertyValue('--c-text-primary'), bodyColor: getComputedStyle(document.body).getPropertyValue('--c-text-secondary'), boxPadding: 8, cornerRadius: 4, callbacks: { label: function(context) { return `${context.label}: ${context.parsed.toFixed(1)}%`; } } } } });
     const initCharts = () => { const currentCtx = document.getElementById('currentPortfolioChart').getContext('2d'); currentPortfolioChart = new Chart(currentCtx, { type: 'doughnut', options: getChartOptions() }); const targetCtx = document.getElementById('targetPortfolioChart').getContext('2d'); targetPortfolioChart = new Chart(targetCtx, { type: 'doughnut', options: getChartOptions() }); };
     const updateChartColors = () => { const newOptions = getChartOptions(); if (currentPortfolioChart) { currentPortfolioChart.options = newOptions; currentPortfolioChart.update('none'); } if (targetPortfolioChart) { targetPortfolioChart.options = newOptions; targetPortfolioChart.update('none'); } };
-    const updateChartData = (chart, labels, data) => { chart.data.labels = labels; chart.data.datasets = [{ data: data, backgroundColor: ['#2563eb', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#3b82f6'], borderWidth: 2, borderColor: getComputedStyle(document.body).getPropertyValue('--c-chart-border') }]; chart.update(); };
-    const updateCurrentChart = () => { const classTotals = {}; assets.forEach(asset => { const value = asset.quantity * asset.precoAtual; classTotals[asset.class] = (classTotals[asset.class] || 0) + value; }); updateChartData(currentPortfolioChart, Object.keys(classTotals), Object.values(classTotals)); };
-    const updateTargetChart = () => { updateChartData(targetPortfolioChart, Object.keys(savedTargetAllocation), Object.values(savedTargetAllocation)); };
+    
+    const updateChartData = (chart, labels, data) => {
+        const chartColors = ['#1D3557', '#00A896', '#457B9D', '#A8DADC', '#F1FAEE', '#E63946'];
+        chart.data.labels = labels;
+        chart.data.datasets = [{ 
+            data: data, 
+            backgroundColor: chartColors, 
+            borderWidth: 2, 
+            borderColor: getComputedStyle(document.body).getPropertyValue('--c-chart-border') 
+        }]; 
+        chart.update(); 
+    };
+
+    const updateCurrentChart = () => { const classTotals = {}; let totalValue = 0; assets.forEach(asset => { const value = asset.quantity * asset.precoAtual; classTotals[asset.class] = (classTotals[asset.class] || 0) + value; totalValue += value; }); const percentages = Object.values(classTotals).map(v => (v / totalValue) * 100); updateChartData(currentPortfolioChart, Object.keys(classTotals), percentages); };
+    const updateTargetChart = () => { const validTargets = Object.entries(savedTargetAllocation).filter(([,v]) => v > 0); updateChartData(targetPortfolioChart, validTargets.map(([k]) => k), validTargets.map(([,v]) => v)); };
     
     const renderPortfolioSummary = () => {
         const summaryEl = document.getElementById('current-portfolio-summary');
@@ -200,7 +197,7 @@ const initializeApp = async (user) => {
             const assetEl = document.createElement('div');
             assetEl.className = 'asset-item';
             assetEl.dataset.ticker = asset.ticker; 
-            assetEl.innerHTML = `<span data-label="Ticker">${asset.ticker}</span><span data-label="Classe">${asset.class}</span><span data-label="Valor Total (R$)">${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span><span data-label="Preço Atual" class="asset-price">${(asset.precoAtual || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}<span class="price-status"></span></span><span data-label="Quantidade">${asset.quantity.toLocaleString('pt-BR')}</span><span data-label="Nota">${asset.score || 0}</span><div data-label="Ações" class="asset-actions"><button class="btn-edit" data-id="${asset.id}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button class="btn-danger" data-id="${asset.id}" title="Remover"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button></div>`;
+            assetEl.innerHTML = `<span data-label="Ticker">${asset.ticker}</span><span data-label="Classe">${asset.class}</span><span data-label="Valor Total (R$)">${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span><span data-label="Preço Atual" class="asset-price">${(asset.precoAtual || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}<span class="price-status"></span></span><span data-label="Quantidade">${asset.quantity.toLocaleString('pt-BR')}</span><span data-label="Nota">${asset.score || 0}</span><div data-label="Ações" class="asset-actions"><button class="btn-edit" data-id="${asset.id}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg></button><button class="btn-danger" data-id="${asset.id}" title="Remover"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`;
             assetListEl.appendChild(assetEl);
         });
         updateCurrentChart();
@@ -214,7 +211,7 @@ const initializeApp = async (user) => {
         const assetsToUpdate = assets.filter(asset => asset.class === 'Ações Nacionais' || asset.class === 'Fundos Imobiliários');
 
         if (assetsToUpdate.length === 0) {
-            showToast("Nenhum ativo para atualizar (Ações Nacionais ou FIIs).", "error");
+            showToast("Nenhum ativo para atualizar.", "error");
             refreshPricesBtn.disabled = false;
             return;
         }
@@ -224,7 +221,7 @@ const initializeApp = async (user) => {
         const totalAssets = assetsToUpdate.length;
         btnSpan.textContent = `Atualizando (0/${totalAssets})...`;
 
-        await Promise.all(assetsToUpdate.map(async (asset, i) => {
+        await Promise.all(assetsToUpdate.map(async (asset) => {
             const assetRow = document.querySelector(`.asset-item[data-ticker="${asset.ticker}"]`);
             const statusEl = assetRow ? assetRow.querySelector('.price-status') : null;
             const priceEl = assetRow ? assetRow.querySelector('.asset-price') : null;

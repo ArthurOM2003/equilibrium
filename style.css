@@ -8,34 +8,34 @@
     --border-radius: 8px;
 
     /* Nova Paleta de Cores (Tema Claro) */
-    --c-bg: linear-gradient(180deg, #ffffff 0%, #f4f7f9 100%);
-    --c-surface: #ffffff;
+    --c-bg: #F8F9FA;
+    --c-surface: #FFFFFF;
     --c-text-primary: #212529;
-    --c-text-secondary: #6c757d;
-    --c-border: #dee2e6;
-    --c-primary: #004d40;      /* Verde Escuro Principal */
-    --c-primary-hover: #00382e;
-    --c-accent: #ffab00;       /* Âmbar/Dourado como Destaque */
-    --c-success: #1e8e3e;
-    --c-danger: #d93025;
-    --c-shadow: rgba(0, 0, 0, 0.05);
-    --c-chart-border: #ffffff;
+    --c-text-secondary: #6C757D;
+    --c-border: #E9ECEF;
+    --c-primary: #1D3557;      /* Azul Escuro Principal (Confiança) */
+    --c-primary-hover: #162942;
+    --c-accent: #00A896;       /* Verde-água como Destaque (Crescimento) */
+    --c-success: #28A745;
+    --c-danger: #DC3545;
+    --c-shadow: rgba(29, 53, 87, 0.1);
+    --c-chart-border: #FFFFFF;
 }
 
 body.dark-mode {
     /* Nova Paleta de Cores (Tema Escuro) */
-    --c-bg: linear-gradient(180deg, #1f2128 0%, #121212 100%);
-    --c-surface: #1e1e1e;
-    --c-text-primary: #e8eaed;
-    --c-text-secondary: #9aa0a6;
-    --c-border: #3c4043;
-    --c-primary: #38b2ac;      /* Verde Água (versão clara do primário) */
-    --c-primary-hover: #4fd1cc;
-    --c-accent: #ffd54f;       /* Âmbar/Dourado (versão clara) */
-    --c-success: #81c995;
-    --c-danger: #f28b82;
+    --c-bg: #121212;
+    --c-surface: #1E1E1E;
+    --c-text-primary: #E8EAED;
+    --c-text-secondary: #9AA0A6;
+    --c-border: #3C4043;
+    --c-primary: #457B9D;      /* Azul Suave (versão clara do primário) */
+    --c-primary-hover: #5A94B8;
+    --c-accent: #45EBA5;       /* Verde Menta (versão clara do destaque) */
+    --c-success: #81C995;
+    --c-danger: #F28B82;
     --c-shadow: rgba(0, 0, 0, 0.25);
-    --c-chart-border: #1e1e1e;
+    --c-chart-border: #1E1E1E;
 }
 
 /* 2. ESTILOS GERAIS E LAYOUT DA LANDING PAGE ================================= */
@@ -60,23 +60,14 @@ h1, h2, h3, .navbar-brand {
 /* Navbar */
 .navbar { padding: 16px 0; background-color: var(--c-surface); border-bottom: 1px solid var(--c-border); position: sticky; top: 0; z-index: 100;}
 .navbar .container { display: flex; justify-content: space-between; align-items: center; }
-.navbar-brand { font-size: 1.5em; font-weight: 700; color: var(--c-text-primary); text-decoration: none; }
+.navbar-brand { font-size: 1.5em; font-weight: 700; color: var(--c-text-primary); text-decoration: none; display: flex; align-items: center; gap: 10px; }
 .nav-controls, .navbar-nav { display: flex; align-items: center; gap: 12px; }
-
-/* Estilo para a lista de botões da Netlify */
-[data-netlify-identity-menu] ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 12px;
-}
 
 /* Hero Section */
 .hero { padding: 80px 0; }
 .hero h1 { font-size: 3em; margin-bottom: 16px; }
 .hero .subtitle { font-size: 1.2em; color: var(--c-text-secondary); max-width: 700px; margin: 0 auto 32px auto; }
-.btn.btn-lg, [data-netlify-identity-button] a { 
+.btn.btn-lg { 
     padding: 16px 32px; 
     font-size: 1.1em; 
 }
@@ -108,7 +99,7 @@ h1, h2, h3, .navbar-brand {
 /* 3. ESTILOS DA APLICAÇÃO (app.html) ===================================== */
 .page-container { display: flex; flex-direction: column; padding: 24px; gap: 24px; }
 .card { background-color: var(--c-surface); padding: 24px; border-radius: var(--border-radius); box-shadow: 0 4px 12px var(--c-shadow); transition: background-color 0.2s; display: flex; flex-direction: column; }
-.btn, [data-netlify-identity-menu] a, [data-netlify-identity-button] a { 
+.btn { 
     display: inline-flex; 
     align-items: center; 
     justify-content: center; 
@@ -122,21 +113,21 @@ h1, h2, h3, .navbar-brand {
     text-decoration: none; 
     transition: background-color 0.2s, opacity 0.2s, border-color 0.2s, color 0.2s; 
 }
-.btn-primary, [data-netlify-identity-menu] a:last-child, [data-netlify-identity-button] { 
+.btn-primary { 
     background-color: var(--c-primary); 
     color: #ffffff; 
     border: 1px solid transparent;
 }
-.btn-primary:hover, [data-netlify-identity-menu] a:last-child:hover, [data-netlify-identity-button]:hover { 
+.btn-primary:hover { 
     background-color: var(--c-primary-hover); 
     opacity: 1;
 }
-.btn-secondary, [data-netlify-identity-menu] a:first-child { 
+.btn-secondary { 
     background-color: transparent; 
     color: var(--c-text-secondary); 
     border: 1px solid var(--c-border); 
 }
-.btn-secondary:hover, [data-netlify-identity-menu] a:first-child:hover { 
+.btn-secondary:hover { 
     background-color: var(--c-border); 
     color: var(--c-text-primary);
 }
@@ -256,7 +247,7 @@ input[type="range"].quality-slider.is-yes { background-color: var(--c-success); 
 .aporte-controls {
     display: flex;
     flex-direction: column;
-    gap: 24px; /* Adiciona um espaçamento vertical de 24px entre os cards */
+    gap: 24px;
 }
 
 /* ESTILOS PARA O SUMÁRIO DA CARTEIRA */
@@ -297,7 +288,7 @@ input[type="range"].quality-slider.is-yes { background-color: var(--c-success); 
 /* 6. RESPONSIVIDADE ====================================================== */
 @media (max-width: 1024px) {
     .top-section, .bottom-section, .aporte-container {
-        grid-template-columns: 1fr; /* Transforma em coluna única */
+        grid-template-columns: 1fr;
     }
 }
 
@@ -321,329 +312,65 @@ input[type="range"].quality-slider.is-yes { background-color: var(--c-success); 
 }
 
 /* 7. MELHORIAS VISUAIS PARA A PÁGINA DE APORTE ======================= */
-
 #exclusao-temporaria-container {
     max-height: 220px;
     overflow-y: auto;
     padding: 4px 10px 4px 4px;
     margin-top: 12px;
 }
+#exclusao-temporaria-container::-webkit-scrollbar { width: 8px; }
+#exclusao-temporaria-container::-webkit-scrollbar-track { background: transparent; }
+#exclusao-temporaria-container::-webkit-scrollbar-thumb { background-color: var(--c-border); border-radius: 4px; }
+#exclusao-temporaria-container::-webkit-scrollbar-thumb:hover { background-color: var(--c-text-secondary); }
+.custom-checkbox { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 8px; border-radius: var(--border-radius); transition: background-color 0.2s; user-select: none; }
+.custom-checkbox:hover { background-color: var(--c-bg); }
+.custom-checkbox input[type="checkbox"] { display: none; }
+.custom-checkbox .checkmark { width: 20px; height: 20px; border: 2px solid var(--c-border); background-color: var(--c-surface); border-radius: 4px; position: relative; transition: background-color 0.2s, border-color 0.2s; flex-shrink: 0; }
+.custom-checkbox .checkmark::after { content: ""; position: absolute; display: none; left: 6px; top: 2px; width: 5px; height: 10px; border: solid white; border-width: 0 3px 3px 0; transform: rotate(45deg); }
+.custom-checkbox input:checked + .checkmark::after { display: block; }
+.custom-checkbox input:checked + .checkmark { background-color: var(--c-primary); border-color: var(--c-primary); }
+.custom-checkbox:hover .checkmark { border-color: var(--c-primary); }
+.checkbox-text .ticker { font-weight: 600; }
+.checkbox-text .class { font-size: 0.85em; color: var(--c-text-secondary); margin-left: 6px; }
+#aporte-results-container .aporte-suggestion .class { font-size: 0.8em; color: var(--c-text-secondary); }
+.suggestion-item.sobra { background-color: var(--c-accent); opacity: 0.9; }
+.suggestion-item.sobra .ticker, .suggestion-item.sobra .aporte-suggestion-amount, .suggestion-item.sobra .class { color: #111827; }
+body.dark-mode .suggestion-item.sobra { background-color: var(--c-accent); }
+body.dark-mode .suggestion-item.sobra .ticker, body.dark-mode .suggestion-item.sobra .aporte-suggestion-amount, body.dark-mode .suggestion-item.sobra .class { color: #111827; }
+.placeholder-text { color: var(--c-text-secondary); font-style: italic; text-align: center; padding: 1rem 0; }
 
-#exclusao-temporaria-container::-webkit-scrollbar {
-    width: 8px;
-}
-#exclusao-temporaria-container::-webkit-scrollbar-track {
-    background: transparent;
-}
-#exclusao-temporaria-container::-webkit-scrollbar-thumb {
-    background-color: var(--c-border);
-    border-radius: 4px;
-}
-#exclusao-temporaria-container::-webkit-scrollbar-thumb:hover {
-    background-color: var(--c-text-secondary);
-}
-
-.custom-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: var(--border-radius);
-    transition: background-color 0.2s;
-    user-select: none;
-}
-
-.custom-checkbox:hover {
-    background-color: var(--c-bg);
-}
-
-.custom-checkbox input[type="checkbox"] {
-    display: none;
-}
-
-.custom-checkbox .checkmark {
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--c-border);
-    background-color: var(--c-surface);
-    border-radius: 4px;
-    position: relative;
-    transition: background-color 0.2s, border-color 0.2s;
-    flex-shrink: 0;
-}
-
-.custom-checkbox .checkmark::after {
-    content: "";
-    position: absolute;
-    display: none;
-    left: 6px;
-    top: 2px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    transform: rotate(45deg);
-}
-
-.custom-checkbox input:checked + .checkmark::after {
-    display: block;
-}
-.custom-checkbox input:checked + .checkmark {
-    background-color: var(--c-primary);
-    border-color: var(--c-primary);
-}
-
-.custom-checkbox:hover .checkmark {
-    border-color: var(--c-primary);
-}
-
-.checkbox-text .ticker {
-    font-weight: 600;
-}
-.checkbox-text .class {
-    font-size: 0.85em;
-    color: var(--c-text-secondary);
-    margin-left: 6px;
-}
-
-#aporte-results-container .aporte-suggestion .class {
-    font-size: 0.8em;
-    color: var(--c-text-secondary);
-}
-
-.suggestion-item.sobra {
-    background-color: var(--c-accent);
-    opacity: 0.9;
-}
-.suggestion-item.sobra .ticker,
-.suggestion-item.sobra .aporte-suggestion-amount,
-.suggestion-item.sobra .class {
-    color: #111827;
-}
-
-body.dark-mode .suggestion-item.sobra {
-    background-color: var(--c-accent);
-}
-
-body.dark-mode .suggestion-item.sobra .ticker,
-body.dark-mode .suggestion-item.sobra .aporte-suggestion-amount,
-body.dark-mode .suggestion-item.sobra .class {
-    color: #111827;
-}
-
-.placeholder-text {
-    color: var(--c-text-secondary);
-    font-style: italic;
-    text-align: center;
-    padding: 1rem 0;
-}
-
-/* =====================================================
-   8. MELHORIAS ADICIONAIS DE FRONTEND
-   ===================================================== */
-
-/* Estilo do Placeholder de Resultados */
-.results-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--c-text-secondary);
-    min-height: 300px;
-    border: 2px dashed var(--c-border);
-    border-radius: var(--border-radius);
-    transition: all 0.3s ease;
-}
-
-.results-placeholder svg {
-    stroke: var(--c-accent);
-    margin-bottom: 16px;
-}
-
-.results-placeholder h3 {
-    font-family: var(--font-family-heading);
-    color: var(--c-text-primary);
-    margin: 0 0 8px 0;
-}
-
-.results-placeholder p {
-    max-width: 300px;
-    margin: 0;
-    line-height: 1.6;
-}
-
-/* Estilo do Botão em Estado de Carregamento */
-.btn.loading {
-    color: transparent !important; /* Esconde o texto */
-    position: relative;
-    pointer-events: none; /* Impede cliques múltiplos */
-}
-
-.btn.loading::after {
-    content: '';
-    display: block;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-left: -12px;
-    margin-top: -12px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, 0.4);
-    border-top-color: #ffffff;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Estilo para os Cabeçalhos dos Cards com Ícones */
-.card-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px; /* Espaçamento entre o header e o conteúdo */
-}
-
-.card-header h2 {
-    margin: 0; /* Remove a margem padrão do h2 */
-}
-
-.card-header svg {
-    color: var(--c-text-secondary);
-    flex-shrink: 0; /* Impede que o ícone seja esmagado */
-}
-
-/* Ajustes finos na lista de sugestões */
-#aporte-results-container .aporte-suggestion {
-    padding: 16px; /* Aumenta o espaçamento interno */
-    margin-bottom: 12px;
-    border: 1px solid var(--c-border); /* Adiciona uma borda sutil */
-}
-
-/* Deixa o Ticker e o Valor mais destacados */
-.aporte-suggestion-info .ticker {
-    font-size: 1.1em; /* Aumenta um pouco o tamanho */
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-.aporte-suggestion-amount {
-    font-size: 1.2em; /* Deixa o valor ainda mais visível */
-    font-weight: 700;
-    color: var(--c-success);
-}
+/* 8. MELHORIAS ADICIONAIS DE FRONTEND ===================================== */
+.results-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; color: var(--c-text-secondary); min-height: 300px; border: 2px dashed var(--c-border); border-radius: var(--border-radius); transition: all 0.3s ease; }
+.results-placeholder svg { stroke: var(--c-accent); margin-bottom: 16px; }
+.results-placeholder h3 { font-family: var(--font-family-heading); color: var(--c-text-primary); margin: 0 0 8px 0; }
+.results-placeholder p { max-width: 300px; margin: 0; line-height: 1.6; }
+.btn.loading { color: transparent !important; position: relative; pointer-events: none; }
+.btn.loading::after { content: ''; display: block; position: absolute; left: 50%; top: 50%; margin-left: -12px; margin-top: -12px; width: 24px; height: 24px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, 0.4); border-top-color: #ffffff; animation: spin 0.8s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.card-header h2 { margin: 0; }
+.card-header svg { color: var(--c-text-secondary); flex-shrink: 0; }
+#aporte-results-container .aporte-suggestion { padding: 16px; margin-bottom: 12px; border: 1px solid var(--c-border); }
+.aporte-suggestion-info .ticker { font-size: 1.1em; font-weight: 700; margin-bottom: 4px; }
+.aporte-suggestion-amount { font-size: 1.2em; font-weight: 700; color: var(--c-success); }
 
 /* 9. ESTILOS DE ONBOARDING E NOTIFICAÇÕES ======================= */
-.onboarding-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--c-accent);
-    color: #111827;
-    padding: 16px 24px;
-    margin-bottom: 24px; /* Adicionado para separar do conteúdo abaixo */
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-body.dark-mode .onboarding-card {
-    background-color: var(--c-accent);
-    color: #111827;
-}
-
-.onboarding-card.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.onboarding-card p {
-    margin: 0;
-    font-weight: 500;
-}
-
-#dismiss-onboarding-btn {
-    background: none;
-    border: none;
-    font-size: 2em;
-    color: #111827;
-    opacity: 0.7;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0;
-}
-#dismiss-onboarding-btn:hover {
-    opacity: 1;
-}
-
-/* Oculta o onboarding quando a classe hidden está presente */
-.onboarding-card.hidden {
-    display: none;
-}
-#toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 2000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.toast {
-    padding: 12px 20px;
-    border-radius: var(--border-radius);
-    color: white;
-    font-weight: 600;
-    box-shadow: 0 4px 12px var(--c-shadow);
-    animation: slideIn 0.3s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
-}
-
+.onboarding-card { display: flex; justify-content: space-between; align-items: center; background-color: var(--c-accent); color: #111827; padding: 16px 24px; margin-bottom: 24px; opacity: 0; transform: translateY(-20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+body.dark-mode .onboarding-card { background-color: var(--c-accent); color: #111827; }
+.onboarding-card.visible { opacity: 1; transform: translateY(0); }
+.onboarding-card p { margin: 0; font-weight: 500; }
+#dismiss-onboarding-btn { background: none; border: none; font-size: 2em; color: #111827; opacity: 0.7; cursor: pointer; line-height: 1; padding: 0; }
+#dismiss-onboarding-btn:hover { opacity: 1; }
+.onboarding-card.hidden { display: none; }
+#toast-container { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+.toast { padding: 12px 20px; border-radius: var(--border-radius); color: white; font-weight: 600; box-shadow: 0 4px 12px var(--c-shadow); animation: slideIn 0.3s ease-out, fadeOut 0.5s ease-in 2.5s forwards; }
 .toast.success { background-color: var(--c-success); }
 .toast.error { background-color: var(--c-danger); }
-
 @keyframes slideIn { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
 @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: scale(0.9); } }
-
-.price-status {
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 8px;
-    transition: all 0.3s ease;
-}
-
-.price-status.spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--c-border);
-    border-top-color: var(--c-primary);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-.price-status.success, .price-status.failure {
-    animation: popIn 0.3s ease-out forwards;
-}
-
-.price-status.success::before {
-    content: '✔';
-    color: var(--c-success);
-    font-weight: bold;
-}
-
-.price-status.failure::before {
-    content: '✖';
-    color: var(--c-danger);
-    font-weight: bold;
-}
-
+.price-status { width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin-left: 8px; transition: all 0.3s ease; }
+.price-status.spinner { width: 16px; height: 16px; border: 2px solid var(--c-border); border-top-color: var(--c-primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+.price-status.success, .price-status.failure { animation: popIn 0.3s ease-out forwards; }
+.price-status.success::before { content: '✔'; color: var(--c-success); font-weight: bold; }
+.price-status.failure::before { content: '✖'; color: var(--c-danger); font-weight: bold; }
 @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
