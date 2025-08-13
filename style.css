@@ -539,3 +539,111 @@ body.dark-mode .suggestion-item.sobra .class {
     font-weight: 700;
     color: var(--c-success);
 }
+
+/* 9. ESTILOS DE ONBOARDING E NOTIFICAÇÕES ======================= */
+.onboarding-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--c-accent);
+    color: #111827;
+    padding: 16px 24px;
+    margin-bottom: 24px; /* Adicionado para separar do conteúdo abaixo */
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+body.dark-mode .onboarding-card {
+    background-color: var(--c-accent);
+    color: #111827;
+}
+
+.onboarding-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.onboarding-card p {
+    margin: 0;
+    font-weight: 500;
+}
+
+#dismiss-onboarding-btn {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: #111827;
+    opacity: 0.7;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+#dismiss-onboarding-btn:hover {
+    opacity: 1;
+}
+
+/* Oculta o onboarding quando a classe hidden está presente */
+.onboarding-card.hidden {
+    display: none;
+}
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    padding: 12px 20px;
+    border-radius: var(--border-radius);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 12px var(--c-shadow);
+    animation: slideIn 0.3s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+}
+
+.toast.success { background-color: var(--c-success); }
+.toast.error { background-color: var(--c-danger); }
+
+@keyframes slideIn { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: scale(0.9); } }
+
+.price-status {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 8px;
+    transition: all 0.3s ease;
+}
+
+.price-status.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--c-border);
+    border-top-color: var(--c-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.price-status.success, .price-status.failure {
+    animation: popIn 0.3s ease-out forwards;
+}
+
+.price-status.success::before {
+    content: '✔';
+    color: var(--c-success);
+    font-weight: bold;
+}
+
+.price-status.failure::before {
+    content: '✖';
+    color: var(--c-danger);
+    font-weight: bold;
+}
+
+@keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }

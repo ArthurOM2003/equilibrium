@@ -77,6 +77,20 @@ const initializeApp = async (user) => {
                 await portfolioRef.set(exampleData);
                 assets = exampleData.assets;
                 savedTargetAllocation = exampleData.target;
+
+                // --- LÓGICA DA MENSAGEM DE ONBOARDING ---
+                const onboardingMessage = document.getElementById('onboarding-message');
+                if (onboardingMessage) {
+                    onboardingMessage.classList.remove('hidden');
+                    onboardingMessage.classList.add('visible');
+                    
+                    const dismissBtn = document.getElementById('dismiss-onboarding-btn');
+                    dismissBtn.addEventListener('click', () => {
+                        onboardingMessage.style.opacity = '0';
+                        setTimeout(() => onboardingMessage.classList.add('hidden'), 500);
+                    });
+                }
+                // --- FIM DA LÓGICA DA MENSAGEM DE ONBOARDING ---
             }
         } catch (error) {
             console.error("Erro Crítico ao carregar dados do Firestore:", error);
@@ -103,12 +117,10 @@ const initializeApp = async (user) => {
     // --- DECLARAÇÃO DE VARIÁVEIS E REFERÊNCIAS ---
     let stagedTargetAllocation = {};
     
-    // Lista de perguntas para Ações Nacionais (original)
     const nationalStockChecklistQuestions = [
         { id: 1, text: 'Dívida Líquida é negativa ou DL/PL < 50%?' }, { id: 2, text: 'ROE (Retorno sobre Patrimônio) histórico acima de 5%?' }, { id: 3, text: 'Dívida líquida é menor que o lucro líquido dos últimos 12 meses?' }, { id: 4, text: 'Tem crescimento de receitas ou lucro > 5% a.a. nos últimos 5 anos?' }, { id: 5, text: 'Possui um histórico consistente de pagamento de dividendos?' }, { id: 6, text: 'Investe consistentemente em pesquisa e inovação?' }, { id: 7, text: 'O setor é perene (não está se tornando obsoleto)?' }, { id: 8, text: 'Está negociada com um P/VP (Preço/Valor Patrimonial) abaixo de 5?' }, { id: 9, text: 'Teve lucro operacional no último exercício (ano)?' }, { id: 10, text: 'Tem mais de 30 anos de mercado (desde a fundação)?' }, { id: 11, text: 'É LÍDER (1º lugar) nacional ou mundial no seu setor?' }, { id: 12, text: 'O setor de atuação da empresa tem mais de 100 anos?' }, { id: 13, text: 'É considerada uma BLUE CHIP (empresa de grande porte e sólida)?' }, { id: 14, text: 'A empresa possui uma gestão bem avaliada pelo mercado?' }, { id: 15, text: 'É livre de escândalos de corrupção recentes?' }, { id: 16, text: 'É livre de controle estatal ou concentração em um único cliente?' }, { id: 17, text: 'O P/L (Preço/Lucro) da empresa está abaixo de 30?' }
     ];
 
-    // Nova lista de perguntas para Ações Internacionais (foco em ETF)
     const internationalChecklistQuestions = [
         { id: 1, text: 'A taxa de administração é inferior a 0,7% ao ano?' },
         { id: 2, text: 'O gestor do fundo tem mais de 5 anos de experiência no mercado?' },
@@ -137,6 +149,15 @@ const initializeApp = async (user) => {
     let currentPortfolioChart, targetPortfolioChart;
     
     // --- FUNÇÕES ---
+    const showToast = (message, type = 'success') => {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    };
+
     const getChartOptions = () => ({ responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'top', labels: { color: getComputedStyle(document.body).getPropertyValue('--c-text-secondary'), font: { family: "'Inter', sans-serif" } } }, tooltip: { backgroundColor: getComputedStyle(document.body).getPropertyValue('--c-surface'), titleColor: getComputedStyle(document.body).getPropertyValue('--c-text-primary'), bodyColor: getComputedStyle(document.body).getPropertyValue('--c-text-secondary'), boxPadding: 8, cornerRadius: 4, callbacks: { label: function(context) { return `${context.label}: ${context.parsed.toFixed(1)}%`; } } } } });
     const initCharts = () => { const currentCtx = document.getElementById('currentPortfolioChart').getContext('2d'); currentPortfolioChart = new Chart(currentCtx, { type: 'doughnut', options: getChartOptions() }); const targetCtx = document.getElementById('targetPortfolioChart').getContext('2d'); targetPortfolioChart = new Chart(targetCtx, { type: 'doughnut', options: getChartOptions() }); };
     const updateChartColors = () => { const newOptions = getChartOptions(); if (currentPortfolioChart) { currentPortfolioChart.options = newOptions; currentPortfolioChart.update('none'); } if (targetPortfolioChart) { targetPortfolioChart.options = newOptions; targetPortfolioChart.update('none'); } };
@@ -178,74 +199,75 @@ const initializeApp = async (user) => {
             const valorTotal = asset.quantity * (asset.precoAtual || 0);
             const assetEl = document.createElement('div');
             assetEl.className = 'asset-item';
-            assetEl.innerHTML = `<span data-label="Ticker">${asset.ticker}</span><span data-label="Classe">${asset.class}</span><span data-label="Valor Total (R$)">${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span><span data-label="Preço Atual">${(asset.precoAtual || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span><span data-label="Quantidade">${asset.quantity.toLocaleString('pt-BR')}</span><span data-label="Nota">${asset.score || 0}</span><div data-label="Ações" class="asset-actions"><button class="btn-edit" data-id="${asset.id}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button class="btn-danger" data-id="${asset.id}" title="Remover"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button></div>`;
+            assetEl.dataset.ticker = asset.ticker; 
+            assetEl.innerHTML = `<span data-label="Ticker">${asset.ticker}</span><span data-label="Classe">${asset.class}</span><span data-label="Valor Total (R$)">${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span><span data-label="Preço Atual" class="asset-price">${(asset.precoAtual || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}<span class="price-status"></span></span><span data-label="Quantidade">${asset.quantity.toLocaleString('pt-BR')}</span><span data-label="Nota">${asset.score || 0}</span><div data-label="Ações" class="asset-actions"><button class="btn-edit" data-id="${asset.id}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button class="btn-danger" data-id="${asset.id}" title="Remover"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button></div>`;
             assetListEl.appendChild(assetEl);
         });
         updateCurrentChart();
         renderPortfolioSummary();
     };
 
-const atualizarCotacoes = async () => {
-    // CORREÇÃO: A URL agora está com 'getquote' em minúsculo para corresponder ao nome do arquivo.
-    const functionUrl = 'https://carteirainvestimentos.netlify.app/.netlify/functions/getQuote';
+    const atualizarCotacoes = async () => {
+        const functionUrl = '/.netlify/functions/getquote';
+        refreshPricesBtn.disabled = true;
+        const btnSpan = refreshPricesBtn.querySelector('span');
+        const assetsToUpdate = assets.filter(asset => asset.class === 'Ações Nacionais' || asset.class === 'Fundos Imobiliários');
 
-    refreshPricesBtn.disabled = true;
-    const btnSpan = refreshPricesBtn.querySelector('span');
-    const assetsToUpdate = assets.filter(asset => asset.class === 'Ações Nacionais' || asset.class === 'Fundos Imobiliários');
-
-    if (assetsToUpdate.length === 0) {
-        alert("Nenhum ativo para atualizar (Ações Nacionais ou FIIs).");
-        refreshPricesBtn.disabled = false;
-        return;
-    }
-
-    let successCount = 0;
-    let errorCount = 0;
-    const totalAssets = assetsToUpdate.length;
-
-    await Promise.all(assetsToUpdate.map(async (asset, i) => {
-        btnSpan.textContent = `Atualizando (${i + 1}/${totalAssets})...`;
-        try {
-            const response = await fetch(`${functionUrl}?ticker=${asset.ticker}`);
-
-            if (!response.ok) {
-                let errorMessage = `Erro na função: ${response.statusText}`;
-                try {
-                    const errorData = await response.json();
-                    errorMessage = errorData.error || errorMessage;
-                } catch (e) {
-                    // Ignora o erro de parse se a resposta não for JSON
-                }
-                throw new Error(`Falha para ${asset.ticker}: ${response.status} - ${errorMessage}`);
-            }
-
-            const data = await response.json();
-
-            if (data && data.price) {
-                asset.precoAtual = data.price;
-                successCount++;
-            } else {
-                console.warn(`Não foi possível obter a cotação para ${asset.ticker}.`, { responseData: data });
-                errorCount++;
-            }
-        } catch (error) {
-            console.error(`Erro ao buscar cotação para ${asset.ticker}:`, error.message);
-            errorCount++;
+        if (assetsToUpdate.length === 0) {
+            showToast("Nenhum ativo para atualizar (Ações Nacionais ou FIIs).", "error");
+            refreshPricesBtn.disabled = false;
+            return;
         }
-    }));
 
-    if (successCount > 0) {
-        renderAssets();
-        await saveAssets();
-    }
+        let successCount = 0;
+        let errorCount = 0;
+        const totalAssets = assetsToUpdate.length;
+        btnSpan.textContent = `Atualizando (0/${totalAssets})...`;
 
-    btnSpan.textContent = 'Atualizar Cotações';
-    refreshPricesBtn.disabled = false;
-    alert(`${successCount} cotação(ões) atualizada(s) com sucesso. ${errorCount} falha(s).`);
-};
+        await Promise.all(assetsToUpdate.map(async (asset, i) => {
+            const assetRow = document.querySelector(`.asset-item[data-ticker="${asset.ticker}"]`);
+            const statusEl = assetRow ? assetRow.querySelector('.price-status') : null;
+            const priceEl = assetRow ? assetRow.querySelector('.asset-price') : null;
 
+            if (statusEl) statusEl.className = 'price-status spinner';
 
+            try {
+                const response = await fetch(`${functionUrl}?ticker=${asset.ticker}`);
+                if (!response.ok) throw new Error(`Falha na API: ${response.status}`);
+                
+                const data = await response.json();
+                if (data && data.price) {
+                    asset.precoAtual = data.price;
+                    if (priceEl) priceEl.innerHTML = `${data.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}<span class="price-status success"></span>`;
+                    successCount++;
+                } else {
+                    throw new Error('Preço não encontrado na resposta.');
+                }
+            } catch (error) {
+                console.error(`Erro ao buscar cotação para ${asset.ticker}:`, error);
+                if (statusEl) statusEl.className = 'price-status failure';
+                errorCount++;
+            } finally {
+                btnSpan.textContent = `Atualizando (${successCount + errorCount}/${totalAssets})...`;
+                setTimeout(() => {
+                    const finalStatusEl = assetRow ? assetRow.querySelector('.price-status') : null;
+                    if (finalStatusEl) finalStatusEl.className = 'price-status';
+                }, 3000);
+            }
+        }));
 
+        if (successCount > 0) {
+            renderAssets();
+            await saveAssets();
+        }
+        
+        btnSpan.textContent = 'Atualizar Cotações';
+        refreshPricesBtn.disabled = false;
+        showToast(`${successCount} cotação(ões) atualizada(s) com sucesso!`, 'success');
+        if (errorCount > 0) {
+            showToast(`${errorCount} falha(s) ao atualizar.`, 'error');
+        }
+    };
     
     const renderChecklistInModal = (questions) => {
         checklistItemsEl.innerHTML = '';
@@ -290,8 +312,7 @@ const atualizarCotacoes = async () => {
             }
         } else {
             document.getElementById('modal-title').textContent = 'Adicionar Novo Ativo';
-            // Ao adicionar um novo, renderiza o checklist default ou nenhum
-            renderChecklistInModal(nationalStockChecklistQuestions); // Padrão
+            renderChecklistInModal(nationalStockChecklistQuestions);
         }
         modal.classList.add('active');
     };
@@ -317,7 +338,7 @@ const atualizarCotacoes = async () => {
                 if (isYes) { score++; } else { score--; }
             });
         } else {
-            score = 10; // Nota padrão para classes sem checklist
+            score = 10;
         }
 
         const idValue = document.getElementById('asset-id').value;
@@ -429,7 +450,7 @@ const atualizarCotacoes = async () => {
         savedTargetAllocation = { ...stagedTargetAllocation };
         saveTarget();
         updateTargetChart();
-        alert("Meta de alocação salva!");
+        showToast("Meta de alocação salva com sucesso!");
     });
 
     addAssetBtn.addEventListener('click', () => openModal());
