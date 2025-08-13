@@ -3,70 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Aporte - Equilibrium</title>
+    <title>Calculadora de Aporte - Horizonte Capital</title>
+    <!-- Favicon com a silhueta da Serra do Curral -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M0 100 L0 70 Q 15 50, 30 70 T 60 75 T 85 65 L 100 80 L 100 100 Z' fill='%234B6B50'/%3E%3C/svg%3E" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="page-container">
-        <header class="main-header">
-            <h1>Calculadora de Aporte</h1>
-            <div class="header-controls">
-                <a href="app.html" class="btn btn-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                    <span class="btn-text">Voltar ao Painel</span>
+        <header class="navbar">
+             <div class="container">
+                 <a href="app.html" class="navbar-brand">
+                    <!-- Logo Horizonte Capital -->
+                    <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 90 L0 60 Q 15 40, 30 60 T 60 65 T 85 55 L 100 70 V 90 Z" fill="currentColor" opacity="0.6"/>
+                        <path d="M0 90 L0 70 Q 15 50, 30 70 T 60 75 T 85 65 L 100 80 V 90 Z" fill="currentColor"/>
+                        <circle cx="75" cy="40" r="12" fill="#BFA14A"/>
+                    </svg>
+                    <span>Horizonte Capital</span>
                 </a>
-                <div class="theme-switcher-wrapper">
-                    <label for="dark-mode-toggle" class="theme-switcher">
-                        <input type="checkbox" id="dark-mode-toggle">
-                        <div class="slider">
-                            <div class="icon sun"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m4.93 19.07 1.41-1.41"></path><path d="m17.66 6.34 1.41-1.41"></path></svg></div>
-                            <div class="icon moon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></div>
-                        </div>
-                    </label>
+                <div class="header-controls">
+                    <a href="app.html" class="btn btn-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                        <span class="btn-text">Voltar ao Painel</span>
+                    </a>
+                    <div class="theme-switcher-wrapper">
+                        <label for="dark-mode-toggle" class="theme-switcher">
+                            <input type="checkbox" id="dark-mode-toggle">
+                            <div class="slider">
+                                <div class="icon sun"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m4.93 19.07 1.41-1.41"></path><path d="m17.66 6.34 1.41-1.41"></path></svg></div>
+                                <div class="icon moon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></div>
+                            </div>
+                        </label>
+                    </div>
+                    <button id="privacy-toggle-btn" class="privacy-toggle-btn" title="Alternar Visibilidade dos Valores">
+                        <svg class="icon-eye-on" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <svg class="icon-eye-off" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" x2="22" y1="2" y2="22"></line></svg>
+                    </button>
                 </div>
-                <button id="privacy-toggle-btn" class="privacy-toggle-btn" title="Alternar Visibilidade dos Valores">
-                    <svg class="icon-eye-on" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                    <svg class="icon-eye-off" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" x2="22" y1="2" y2="22"></line></svg>
-                </button>
             </div>
         </header>
 
-        <div class="aporte-container">
-            <div class="aporte-controls">
-                <div class="card">
-                    <h2>Simular Aporte</h2>
-                    <div class="form-group">
-                        <label for="aporte-amount">Qual o valor total do seu aporte?</label>
-                        <input type="number" id="aporte-amount" placeholder="Ex: 1000.00" step="0.01" class="sensitive-data">
-                    </div>
-                    <button id="calculate-aporte-btn" class="btn btn-primary btn-full-width">
-                        <span class="btn-text">Calcular Aporte Ideal</span>
-                    </button>
-                </div>
-                <div class="card">
-                    <h2>Situação da Carteira</h2>
-                    <div id="status-carteira"></div>
-                </div>
-                <div class="card">
-                    <h2>Excluir Ativos do Aporte</h2>
-                    <p style="font-size: 0.9rem; color: var(--c-text-secondary); margin-top: -10px; margin-bottom: 15px;">Marque os ativos para ignorar neste cálculo.</p>
-                    <div id="exclusao-temporaria-container" style="max-height: 200px; overflow-y: auto;">
+        <div class="page-content">
+            <h1 class="page-title">Calculadora de Aporte</h1>
+            <div class="aporte-container">
+                <div class="aporte-controls">
+                    <div class="card">
+                        <h2>Simular Aporte</h2>
+                        <div class="form-group">
+                            <label for="aporte-amount">Qual o valor total do seu aporte?</label>
+                            <input type="number" id="aporte-amount" placeholder="Ex: 1000.00" step="0.01" class="sensitive-data">
                         </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>Sugestão de Aporte</h2>
-                <div id="aporte-results-container">
-                    <div class="results-placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="5"/></svg>
-                        <h3>Calcule seu Aporte Ideal</h3>
-                        <p>Preencha o valor do seu aporte e clique em "Calcular" para ver as sugestões.</p>
+                        <button id="calculate-aporte-btn" class="btn btn-primary btn-full-width">
+                            <span class="btn-text">Calcular Aporte Ideal</span>
+                        </button>
+                    </div>
+                    <div class="card">
+                        <h2>Situação da Carteira</h2>
+                        <div id="status-carteira"></div>
+                    </div>
+                    <div class="card">
+                        <h2>Excluir Ativos do Aporte</h2>
+                        <p style="font-size: 0.9rem; color: var(--c-text-secondary); margin-top: -10px; margin-bottom: 15px;">Marque os ativos para ignorar neste cálculo.</p>
+                        <div id="exclusao-temporaria-container" style="max-height: 200px; overflow-y: auto;">
+                            </div>
                     </div>
                 </div>
-            </div>
 
+                <div class="card">
+                    <h2>Sugestão de Aporte</h2>
+                    <div id="aporte-results-container">
+                        <div class="results-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="5"/></svg>
+                            <h3>Calcule seu Aporte Ideal</h3>
+                            <p>Preencha o valor do seu aporte e clique em "Calcular" para ver as sugestões.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 

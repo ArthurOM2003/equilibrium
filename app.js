@@ -156,7 +156,13 @@ const initializeApp = async (user) => {
 
     // --- FUNÇÕES DE RENDERIZAÇÃO ---
     const initCharts = () => { const currentCtx = document.getElementById('currentPortfolioChart').getContext('2d'); currentPortfolioChart = new Chart(currentCtx, { type: 'doughnut', options: getChartOptions() }); const targetCtx = document.getElementById('targetPortfolioChart').getContext('2d'); targetPortfolioChart = new Chart(targetCtx, { type: 'doughnut', options: getChartOptions() }); };
-    const updateChartData = (chart, labels, data) => { const chartColors = ['#1D3557', '#00A896', '#457B9D', '#A8DADC', '#F1FAEE', '#E63946']; chart.data.labels = labels; chart.data.datasets = [{ data: data, backgroundColor: chartColors, borderWidth: 2, borderColor: getComputedStyle(document.body).getPropertyValue('--c-chart-border') }]; chart.update(); };
+    const updateChartData = (chart, labels, data) => { 
+        // Cores da paleta Horizonte Capital para os gráficos
+        const chartColors = ['#4B6B50', '#BFA14A', '#A0522D', '#6D6D6D', '#8C785A', '#A9A9A9']; 
+        chart.data.labels = labels; 
+        chart.data.datasets = [{ data: data, backgroundColor: chartColors, borderWidth: 2, borderColor: getComputedStyle(document.body).getPropertyValue('--c-chart-border') }]; 
+        chart.update(); 
+    };
     const updateCurrentChart = () => { const classTotals = {}; let totalValue = 0; assets.forEach(asset => { const value = asset.quantity * asset.precoAtual; classTotals[asset.class] = (classTotals[asset.class] || 0) + value; totalValue += value; }); const percentages = totalValue > 0 ? Object.values(classTotals).map(v => (v / totalValue) * 100) : []; updateChartData(currentPortfolioChart, Object.keys(classTotals), percentages); };
     const updateTargetChart = () => { const validTargets = Object.entries(savedTargetAllocation).filter(([,v]) => v > 0); updateChartData(targetPortfolioChart, validTargets.map(([k]) => k), validTargets.map(([,v]) => v)); };
     
@@ -262,7 +268,6 @@ const initializeApp = async (user) => {
         setButtonLoading(refreshPricesBtn, false);
     };
     
-    // ================== FUNÇÃO ADICIONADA DE VOLTA ==================
     const renderChecklistInModal = (questions) => {
         checklistItemsEl.innerHTML = '';
         questions.forEach(q => {
@@ -272,7 +277,6 @@ const initializeApp = async (user) => {
             checklistItemsEl.appendChild(item);
         });
     };
-    // ================================================================
 
     const openModal = (asset = null) => {
         assetForm.reset();
