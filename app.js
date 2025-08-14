@@ -273,7 +273,15 @@ const initializeApp = async (user) => {
         questions.forEach(q => {
             const item = document.createElement('div');
             item.className = 'checklist-item';
-            item.innerHTML = `<span class="question-text">${q.text}</span><div class="quality-slider-wrapper"><span class="slider-label no">Não</span><input type="range" class="quality-slider" min="0" max="1" value="0" data-id="${q.id}"><span class="slider-label yes">Sim</span></div>`;
+            
+            // Nova estrutura usando <label> e <input type="checkbox">
+            item.innerHTML = `
+                <span class="question-text">${q.text}</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" class="quality-checkbox" data-id="${q.id}">
+                    <span class="switch-slider"></span>
+                </label>
+            `;
             checklistItemsEl.appendChild(item);
         });
     };
@@ -295,7 +303,13 @@ const initializeApp = async (user) => {
             if (checklistToUse.length > 0) {
                 renderChecklistInModal(checklistToUse);
                 checklistContainer.classList.remove('hidden');
-                checklistToUse.forEach(q => { const slider = checklistItemsEl.querySelector(`.quality-slider[data-id="${q.id}"]`); if (slider && asset.questions) { slider.value = asset.questions[q.id] ? 1 : 0; slider.classList.toggle('is-yes', !!asset.questions[q.id]); } });
+                checklistToUse.forEach(q => {
+                    const checkbox = checklistItemsEl.querySelector(`.quality-checkbox[data-id="${q.id}"]`);
+                    if (checkbox && asset.questions) {
+                        // Usamos a propriedade .checked para checkboxes
+                        checkbox.checked = !!asset.questions[q.id];
+                    }
+                });
             }
         } else {
             document.getElementById('modal-title').textContent = 'Adicionar Novo Ativo';
@@ -315,7 +329,20 @@ const initializeApp = async (user) => {
         else if (assetClass === 'Ações Internacionais') checklistToUse = internationalChecklistQuestions;
 
         let score = 0; const questionAnswers = {};
-        if (checklistToUse.length > 0) { checklistItemsEl.querySelectorAll('.quality-slider').forEach(slider => { const qId = Number(slider.dataset.id); const isYes = parseInt(slider.value) === 1; questionAnswers[qId] = isYes; if (isYes) { score++; } else { score--; } }); } else { score = 10; }
+        if (checklistToUse.length > 0) {
+            checklistItemsEl.querySelectorAll('.quality-checkbox').forEach(checkbox => {
+                const qId = Number(checkbox.dataset.id);
+                const isYes = checkbox.checked; // Lemos a propriedade .checked
+                questionAnswers[qId] = isYes;
+                if (isYes) {
+                    score++;
+                } else {
+                    score--;
+                }
+            });
+        } else {
+            score = 10;
+        }
 
         const idValue = document.getElementById('asset-id').value;
         const assetData = { ticker: document.getElementById('asset-ticker').value.toUpperCase(), class: assetClass, quantity: parseFloat(document.getElementById('asset-quantity').value), precoAtual: parseFloat(document.getElementById('asset-price').value), score: score, questions: questionAnswers };
@@ -387,23 +414,7 @@ const initializeApp = async (user) => {
         else { checklistContainer.classList.add('hidden'); }
     });
 
-    // NOVO CÓDIGO: Adiciona a funcionalidade de clique para alternar o slider
-    checklistItemsEl.addEventListener('click', (e) => {
-        const wrapper = e.target.closest('.quality-slider-wrapper');
-        if (wrapper) {
-            e.preventDefault(); // Impede o comportamento padrão do clique no range
-            const slider = wrapper.querySelector('.quality-slider');
-            if (slider) {
-                const currentValue = parseInt(slider.value, 10);
-                // Alterna o valor entre 0 e 1
-                slider.value = (currentValue === 0) ? 1 : 0;
-                // Dispara o evento 'input' manualmente para que o outro listener (que troca a classe .is-yes) seja acionado
-                slider.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-        }
-    });
-    
-    checklistItemsEl.addEventListener('input', (e) => { if (e.target.classList.contains('quality-slider')) { e.target.classList.toggle('is-yes', parseInt(e.target.value) === 1); } });
+    // Os listeners de clique e input para o slider foram removidos pois não são mais necessários.
     
     allocationSlidersEl.addEventListener('input', (e) => {
         const target = e.target;

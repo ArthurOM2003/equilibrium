@@ -257,91 +257,64 @@ body.dark-mode .theme-switcher .icon.moon { color: var(--c-accent); }
 .checklist-item div:first-child:hover .delete-question-btn { visibility: visible; }
 .hidden { display: none !important; }
 
-/* REGRAS ATUALIZADAS E CORRIGIDAS PARA O SLIDER DE QUALIDADE */
-.quality-slider-wrapper { 
-    display: flex; 
-    align-items: center; 
-    justify-content: flex-end; 
-    gap: 10px; 
-    cursor: pointer;
-}
+/* =================================================================== */
+/* ==   NOVO COMPONENTE DE SLIDER (TOGGLE SWITCH) - BOAS PRÁTICAS   == */
+/* =================================================================== */
 
-.slider-label { 
-    font-size: 0.8em; 
-    font-weight: 600; 
-    transition: color 0.3s ease;
-    pointer-events: none;
-}
-
-input[type="range"].quality-slider {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 44px;
-    height: 24px;
-    background-color: var(--c-danger);
-    border-radius: 12px;
+.toggle-switch {
     position: relative;
+    display: inline-block;
+    width: 50px;  /* Largura do switch */
+    height: 28px; /* Altura do switch */
+}
+
+/* Esconde o checkbox padrão do navegador */
+.toggle-switch .quality-checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* O "trilho" do slider */
+.switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--c-danger); /* Cor padrão para "Não" */
+    border-radius: 28px; /* Para um formato de pílula */
     transition: background-color 0.3s ease;
-    outline: none;
-    pointer-events: none;
 }
 
-/* Estilos base da bolinha (sem posição) */
-input[type="range"].quality-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
+/* A "bolinha" do slider, criada com um pseudo-elemento */
+.switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px; /* Altura da bolinha */
+    width: 20px;  /* Largura da bolinha */
+    left: 4px;    /* Posição inicial (esquerda) */
+    bottom: 4px;  /* Posição inicial (base) */
     background-color: white;
     border-radius: 50%;
-    border: none;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-    transition: transform 0.3s ease;
-    margin-top: 2px;
-}
-input[type="range"].quality-slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    border-radius: 50%;
-    border: none;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     transition: transform 0.3s ease;
 }
 
-/* Posição da bolinha no estado "NÃO" (esquerda) */
-input[type="range"].quality-slider:not(.is-yes)::-webkit-slider-thumb {
-    transform: translateX(2px);
-}
-input[type="range"].quality-slider:not(.is-yes)::-moz-range-thumb {
-    transform: translateX(2px);
+/* Lógica de mudança de estado */
+.toggle-switch input:checked + .switch-slider {
+    background-color: var(--c-success); /* Muda a cor do trilho para verde quando "Sim" */
 }
 
-/* Posição da bolinha no estado "SIM" (direita) */
-input[type="range"].quality-slider.is-yes::-webkit-slider-thumb {
-    transform: translateX(20px);
-}
-input[type="range"].quality-slider.is-yes::-moz-range-thumb {
-    transform: translateX(20px);
+.toggle-switch input:checked + .switch-slider:before {
+    transform: translateX(22px); /* Move a bolinha para a direita quando "Sim" */
 }
 
-input[type="range"].quality-slider.is-yes { 
-    background-color: var(--c-success); 
+/* Adiciona um anel de foco para acessibilidade ao navegar com o teclado */
+.toggle-switch input:focus + .switch-slider {
+    box-shadow: 0 0 1px 2px var(--c-primary);
 }
-
-.slider-label.no { 
-    color: var(--c-text-secondary); 
-}
-.slider-label.yes { 
-    color: var(--c-text-secondary); 
-}
-
-.quality-slider-wrapper input[type="range"]:not(.is-yes) ~ .no,
-.quality-slider-wrapper input[type="range"].is-yes ~ .yes {
-    color: var(--c-text-primary);
-}
-/* FIM DAS REGRAS */
-
 
 /* 5. ESTILOS DA PÁGINA DE APORTE ======================================== */
 .aporte-container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 24px; align-items: flex-start; }
