@@ -97,7 +97,7 @@ h1, h2, h3, .navbar-brand {
     padding: 80px 0 120px 0;
     color: var(--c-text-primary);
     /* !! IMPORTANTE !! Substitua pela URL da sua imagem de fundo */
-    background-image: linear-gradient(to top, hsla(0, 0%, 96%, 1) 10%, hsla(0, 0%, 96%, 0)), url('https://images.unsplash.com/photo-1595899434842-13223b5a7644?q=80&w=2070&auto=format&fit=crop');
+    background-image: linear-gradient(to top, hsla(0, 0%, 96%, 1) 10%, hsla(0, 0%, 96%, 0)), url('image/curral.png');
     background-size: cover;
     background-position: center 70%;
 }
