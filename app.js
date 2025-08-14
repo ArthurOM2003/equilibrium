@@ -387,6 +387,22 @@ const initializeApp = async (user) => {
         else { checklistContainer.classList.add('hidden'); }
     });
 
+    // NOVO CÓDIGO: Adiciona a funcionalidade de clique para alternar o slider
+    checklistItemsEl.addEventListener('click', (e) => {
+        const wrapper = e.target.closest('.quality-slider-wrapper');
+        if (wrapper) {
+            e.preventDefault(); // Impede o comportamento padrão do clique no range
+            const slider = wrapper.querySelector('.quality-slider');
+            if (slider) {
+                const currentValue = parseInt(slider.value, 10);
+                // Alterna o valor entre 0 e 1
+                slider.value = (currentValue === 0) ? 1 : 0;
+                // Dispara o evento 'input' manualmente para que o outro listener (que troca a classe .is-yes) seja acionado
+                slider.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        }
+    });
+    
     checklistItemsEl.addEventListener('input', (e) => { if (e.target.classList.contains('quality-slider')) { e.target.classList.toggle('is-yes', parseInt(e.target.value) === 1); } });
     
     allocationSlidersEl.addEventListener('input', (e) => {

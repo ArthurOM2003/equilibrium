@@ -263,12 +263,14 @@ body.dark-mode .theme-switcher .icon.moon { color: var(--c-accent); }
     align-items: center; 
     justify-content: flex-end; 
     gap: 10px; 
+    cursor: pointer; /* Adiciona o cursor de ponteiro para indicar que é clicável */
 }
 
 .slider-label { 
     font-size: 0.8em; 
     font-weight: 600; 
     transition: color 0.3s ease;
+    pointer-events: none; /* Impede que as labels capturem o clique */
 }
 
 input[type="range"].quality-slider {
@@ -279,9 +281,9 @@ input[type="range"].quality-slider {
     background-color: var(--c-danger);
     border-radius: 12px;
     position: relative;
-    cursor: pointer;
     transition: background-color 0.3s ease;
     outline: none;
+    pointer-events: none; /* Impede que o próprio input capture o clique */
 }
 
 input[type="range"].quality-slider::-webkit-slider-thumb {
@@ -295,7 +297,7 @@ input[type="range"].quality-slider::-webkit-slider-thumb {
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     transition: transform 0.3s ease;
     transform: translateX(2px);
-    margin-top: 2px; /* CORREÇÃO: Centraliza a bolinha verticalmente */
+    margin-top: 2px;
 }
 
 input[type="range"].quality-slider.is-yes { 
@@ -303,7 +305,7 @@ input[type="range"].quality-slider.is-yes {
 }
 
 input[type="range"].quality-slider.is-yes::-webkit-slider-thumb {
-    transform: translateX(22px);
+    transform: translateX(20px); /* CORREÇÃO: Evita que a bolinha vaze */
 }
 
 input[type="range"].quality-slider::-moz-range-thumb {
@@ -313,11 +315,10 @@ input[type="range"].quality-slider::-moz-range-thumb {
     border-radius: 50%;
     border: none;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-    /* Firefox geralmente centraliza bem, então não precisa de margem */
 }
 
 input[type="range"].quality-slider.is-yes::-moz-range-thumb {
-    transform: translateX(22px);
+    transform: translateX(20px); /* CORREÇÃO: Evita que a bolinha vaze */
 }
 
 .slider-label.no { 
