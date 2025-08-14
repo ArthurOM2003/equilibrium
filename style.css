@@ -232,9 +232,6 @@ body.dark-mode .theme-switcher .icon.moon { color: var(--c-accent); }
 #checklist-items { max-height: 280px; overflow-y: auto; padding-right: 10px; }
 .checklist-item { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--c-border);}
 .checklist-item:last-child { border-bottom: none; }
-.checklist-item .question-text {
-    /* Estilos para o texto da pergunta, se necessário */
-}
 .delete-question-btn { background: none; border: none; color: var(--c-text-secondary); cursor: pointer; font-weight: bold; visibility: hidden; flex-shrink: 0; }
 .checklist-item:hover .delete-question-btn { visibility: visible; }
 .hidden { display: none !important; }

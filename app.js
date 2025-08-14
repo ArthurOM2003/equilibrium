@@ -26,6 +26,16 @@ const initializeApp = async (user) => {
     let nextAssetId = 1;
     let currentPortfolioChart, targetPortfolioChart;
 
+    // --- NOVO MAPA DE CORES FIXO PARA AS CLASSES DE ATIVOS ---
+    const assetClassColorMap = {
+        'Ações Nacionais': '#4B6B50',     // Verde Serrado
+        'Ações Internacionais': '#BFA14A',// Ouro Velho
+        'Fundos Imobiliários': '#A0522D',  // Terracota
+        'Renda Fixa Nacional': '#6D6D6D', // Cinza Pedra
+        'Cripto': '#8C785A',              // Tom terroso
+        'Default': '#A9A9A9'              // Cor padrão para novas classes
+    };
+
     const welcomeMessage = document.getElementById('welcome-message');
     const logoutBtn = document.getElementById('logout-btn');
     const logoutModal = document.getElementById('logout-modal');
@@ -156,13 +166,22 @@ const initializeApp = async (user) => {
 
     // --- FUNÇÕES DE RENDERIZAÇÃO ---
     const initCharts = () => { const currentCtx = document.getElementById('currentPortfolioChart').getContext('2d'); currentPortfolioChart = new Chart(currentCtx, { type: 'doughnut', options: getChartOptions() }); const targetCtx = document.getElementById('targetPortfolioChart').getContext('2d'); targetPortfolioChart = new Chart(targetCtx, { type: 'doughnut', options: getChartOptions() }); };
+    
+    // --- FUNÇÃO DE ATUALIZAÇÃO DO GRÁFICO MODIFICADA ---
     const updateChartData = (chart, labels, data) => { 
-        // Cores da paleta Horizonte Capital para os gráficos
-        const chartColors = ['#4B6B50', '#BFA14A', '#A0522D', '#6D6D6D', '#8C785A', '#A9A9A9']; 
+        // Gera a lista de cores dinamicamente com base nos labels e no mapa de cores
+        const backgroundColors = labels.map(label => assetClassColorMap[label] || assetClassColorMap['Default']);
+        
         chart.data.labels = labels; 
-        chart.data.datasets = [{ data: data, backgroundColor: chartColors, borderWidth: 2, borderColor: getComputedStyle(document.body).getPropertyValue('--c-chart-border') }]; 
+        chart.data.datasets = [{ 
+            data: data, 
+            backgroundColor: backgroundColors, 
+            borderWidth: 2, 
+            borderColor: getComputedStyle(document.body).getPropertyValue('--c-chart-border') 
+        }]; 
         chart.update(); 
     };
+
     const updateCurrentChart = () => { const classTotals = {}; let totalValue = 0; assets.forEach(asset => { const value = asset.quantity * asset.precoAtual; classTotals[asset.class] = (classTotals[asset.class] || 0) + value; totalValue += value; }); const percentages = totalValue > 0 ? Object.values(classTotals).map(v => (v / totalValue) * 100) : []; updateChartData(currentPortfolioChart, Object.keys(classTotals), percentages); };
     const updateTargetChart = () => { const validTargets = Object.entries(savedTargetAllocation).filter(([,v]) => v > 0); updateChartData(targetPortfolioChart, validTargets.map(([k]) => k), validTargets.map(([,v]) => v)); };
     
@@ -274,7 +293,6 @@ const initializeApp = async (user) => {
             const item = document.createElement('div');
             item.className = 'checklist-item';
             
-            // Nova estrutura usando <label> e <input type="checkbox">
             item.innerHTML = `
                 <span class="question-text">${q.text}</span>
                 <label class="toggle-switch">
@@ -306,7 +324,6 @@ const initializeApp = async (user) => {
                 checklistToUse.forEach(q => {
                     const checkbox = checklistItemsEl.querySelector(`.quality-checkbox[data-id="${q.id}"]`);
                     if (checkbox && asset.questions) {
-                        // Usamos a propriedade .checked para checkboxes
                         checkbox.checked = !!asset.questions[q.id];
                     }
                 });
@@ -332,7 +349,7 @@ const initializeApp = async (user) => {
         if (checklistToUse.length > 0) {
             checklistItemsEl.querySelectorAll('.quality-checkbox').forEach(checkbox => {
                 const qId = Number(checkbox.dataset.id);
-                const isYes = checkbox.checked; // Lemos a propriedade .checked
+                const isYes = checkbox.checked;
                 questionAnswers[qId] = isYes;
                 if (isYes) {
                     score++;
@@ -413,8 +430,6 @@ const initializeApp = async (user) => {
         if (checklistToUse.length > 0) { renderChecklistInModal(checklistToUse); checklistContainer.classList.remove('hidden'); } 
         else { checklistContainer.classList.add('hidden'); }
     });
-
-    // Os listeners de clique e input para o slider foram removidos pois não são mais necessários.
     
     allocationSlidersEl.addEventListener('input', (e) => {
         const target = e.target;
