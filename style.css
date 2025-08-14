@@ -157,7 +157,7 @@ h1, h2, h3, .navbar-brand {
     color: var(--c-text-primary);
 }
 .btn-danger { background-color: var(--c-danger); color: white; }
-.btn-accent { background-color: var(--c-accent); color: var(--c-primary); font-weight: 700; }
+.btn-accent { background-color: var(--c-accent); color: #ffffff; font-weight: 700; }
 .btn-accent:hover { background-color: var(--c-accent-hover); }
 .btn-add-question { width: 100%; margin-top: 15px; background-color: var(--c-bg); color: var(--c-text-primary); }
 .main-header { display: flex; justify-content: space-between; align-items: center; }
