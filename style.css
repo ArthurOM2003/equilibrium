@@ -72,27 +72,20 @@ h1, h2, h3, .navbar-brand {
 .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 .text-center { text-align: center; }
 
-/* Navbar */
+/* --- NAVBAR ATUALIZADO PARA TEMA CLARO --- */
 .navbar { 
     padding: 12px 0; 
-    border-bottom: 1px solid transparent; 
+    border-bottom: 1px solid var(--c-border); /* Borda sutil */
     position: sticky; 
     top: 0; 
     z-index: 100;
-    /* Gradiente temático e classe .bh-theme aplicada */
-    background-color: var(--c-surface); /* Ou um tom bege claro: #F0E68C */
-    color: var(--c-bg);
+    background: var(--c-surface); /* Fundo branco/de superfície */
+    color: var(--c-text-primary); /* Cor do texto padrão para escura */
 }
 .navbar .container { display: flex; justify-content: space-between; align-items: center; }
-.navbar-brand { font-size: 1.5em; font-weight: 700; color: var(--c-bg); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-.navbar-brand svg { color: var(--c-bg); } /* Cor do SVG ajustada para contraste */
+.navbar-brand { font-size: 1.5em; font-weight: 700; color: var(--c-text-primary); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+.navbar-brand svg { color: var(--c-text-primary); } /* Cor do SVG escura */
 .nav-controls, .navbar-nav { display: flex; align-items: center; gap: 12px; }
-
-/* Classe temática solicitada */
-.bh-theme {
-    background: linear-gradient(135deg, #BFA14A, #4B6B50);
-    color: #F5F5F5;
-}
 
 /* Hero Section */
 .hero { padding: 80px 0; }
@@ -129,7 +122,7 @@ h1, h2, h3, .navbar-brand {
 
 /* 3. ESTILOS DA APLICAÇÃO (app.html) ===================================== */
 .page-container { display: flex; flex-direction: column; gap: 24px; }
-.card { background-color: var(--c-surface); padding: 24px; border-radius: var(--border-radius); box-shadow: 0 4px 12px var(--c-shadow); transition: background-color 0.2s; display: flex; flex-direction: column; min-height: 0; /* BUG FIX: Permite que flex-grow funcione corretamente dentro de um grid */ }
+.card { background-color: var(--c-surface); padding: 24px; border-radius: var(--border-radius); box-shadow: 0 4px 12px var(--c-shadow); transition: background-color 0.2s; display: flex; flex-direction: column; min-height: 0; }
 .btn { 
     position: relative;
     display: inline-flex; 
@@ -159,16 +152,8 @@ h1, h2, h3, .navbar-brand {
     color: var(--c-text-secondary); 
     border: 1px solid var(--c-border); 
 }
-.navbar .btn-secondary { /* Estilo específico para botões no navbar temático */
-    color: var(--c-bg);
-    border-color: rgba(245, 245, 245, 0.5);
-}
-.navbar .btn-secondary:hover {
-    background-color: rgba(245, 245, 245, 0.2);
-    color: white;
-}
-.btn-secondary:not(.navbar .btn-secondary):hover { 
-    background-color: var(--c-border); 
+.btn-secondary:hover { 
+    background-color: var(--c-bg); 
     color: var(--c-text-primary);
 }
 .btn-danger { background-color: var(--c-danger); color: white; }
@@ -178,14 +163,11 @@ h1, h2, h3, .navbar-brand {
 .main-header { display: flex; justify-content: space-between; align-items: center; }
 .header-controls { display: flex; align-items: center; gap: 12px; }
 .user-info { display: flex; align-items: center; gap: 16px; color: var(--c-text-secondary); }
-.navbar .user-info {
-    color: var(--c-bg); /* Isso fará o texto usar a cor de fundo (Branco Neblina) */
-}
 .top-section { display: grid; grid-template-columns: 2fr 1.2fr; gap: 24px; margin: 12px;}
 .bottom-section { display: grid; grid-template-columns: 340px 1fr; }
 .left-panel, .right-panel { display: flex; flex-direction: column; margin: 12px;}
 .full-height { height: 100%; }
-.chart-wrapper { position: relative; flex-grow: 1; min-height: 200px; margin-top: 20px; } /* LAYOUT RESTAURADO: flex-grow re-adicionado */
+.chart-wrapper { position: relative; flex-grow: 1; min-height: 200px; margin-top: 20px; }
 .allocation-section h2 { margin-bottom: 20px; }
 .portfolio-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--c-border); }
 .portfolio-header h2 { border-bottom: none; padding-bottom: 0; }
@@ -250,11 +232,11 @@ body.dark-mode .theme-switcher .icon.moon { color: var(--c-accent); }
 #checklist-items { max-height: 280px; overflow-y: auto; padding-right: 10px; }
 .checklist-item { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--c-border);}
 .checklist-item:last-child { border-bottom: none; }
-.checklist-item div:first-child { display: flex; align-items: center; gap: 8px; }
-.question-text-input { flex-grow: 1; border: none; background: transparent; padding: 5px; color: var(--c-text-primary);}
-.question-text-input:focus { outline: none; background-color: var(--c-bg); }
+.checklist-item .question-text {
+    /* Estilos para o texto da pergunta, se necessário */
+}
 .delete-question-btn { background: none; border: none; color: var(--c-text-secondary); cursor: pointer; font-weight: bold; visibility: hidden; flex-shrink: 0; }
-.checklist-item div:first-child:hover .delete-question-btn { visibility: visible; }
+.checklist-item:hover .delete-question-btn { visibility: visible; }
 .hidden { display: none !important; }
 
 /* =================================================================== */
@@ -469,15 +451,20 @@ body.dark-mode .onboarding-card { background-color: var(--c-accent); color: #111
 @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
 /* 10. ESTILOS DO MODO DE PRIVACIDADE */
-.privacy-toggle-btn { background: transparent; border: none; color: var(--c-text-secondary); cursor: pointer; padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.privacy-toggle-btn:hover { background-color: var(--c-border); color: var(--c-text-primary); }
-.navbar .privacy-toggle-btn { /* Cor do ícone de privacidade no navbar temático */
-    color: var(--c-bg);
-    opacity: 0.8;
+.privacy-toggle-btn { 
+    background: transparent; 
+    border: none; 
+    color: var(--c-text-secondary); 
+    cursor: pointer; 
+    padding: 6px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
 }
-.navbar .privacy-toggle-btn:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    opacity: 1;
+.privacy-toggle-btn:hover { 
+    background-color: var(--c-border); 
+    color: var(--c-text-primary); 
 }
 .privacy-toggle-btn .icon-eye-off { display: none; }
 body.privacy-mode .privacy-toggle-btn .icon-eye-on { display: none; }
