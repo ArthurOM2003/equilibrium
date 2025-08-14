@@ -80,7 +80,7 @@ h1, h2, h3, .navbar-brand {
     top: 0; 
     z-index: 100;
     /* Gradiente temático e classe .bh-theme aplicada */
-    background: linear-gradient(135deg, var(--c-accent), var(--c-primary));
+    background-color: var(--c-surface); /* Ou um tom bege claro: #F0E68C */
     color: var(--c-bg);
 }
 .navbar .container { display: flex; justify-content: space-between; align-items: center; }
