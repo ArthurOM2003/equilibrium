@@ -255,14 +255,83 @@ body.dark-mode .theme-switcher .icon.moon { color: var(--c-accent); }
 .question-text-input:focus { outline: none; background-color: var(--c-bg); }
 .delete-question-btn { background: none; border: none; color: var(--c-text-secondary); cursor: pointer; font-weight: bold; visibility: hidden; flex-shrink: 0; }
 .checklist-item div:first-child:hover .delete-question-btn { visibility: visible; }
-.quality-slider-wrapper { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
-.slider-label { font-size: 0.8em; font-weight: 600; }
-.slider-label.no { color: var(--c-danger); }
-.slider-label.yes { color: var(--c-success); }
-input[type="range"].quality-slider { width: 50px; height: 24px; background: var(--c-danger); border-radius: 12px; transition: background-color 0.2s; }
-input[type="range"].quality-slider::-webkit-slider-thumb { width: 20px; height: 20px; margin-top: 2px; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-input[type="range"].quality-slider.is-yes { background-color: var(--c-success); }
 .hidden { display: none !important; }
+
+/* REGRAS ATUALIZADAS PARA O SLIDER DE QUALIDADE */
+.quality-slider-wrapper { 
+    display: flex; 
+    align-items: center; 
+    justify-content: flex-end; 
+    gap: 10px; 
+}
+
+.slider-label { 
+    font-size: 0.8em; 
+    font-weight: 600; 
+    transition: color 0.3s ease;
+}
+
+input[type="range"].quality-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 44px;
+    height: 24px;
+    background-color: var(--c-danger);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    outline: none;
+}
+
+input[type="range"].quality-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+    transform: translateX(2px);
+}
+
+input[type="range"].quality-slider.is-yes { 
+    background-color: var(--c-success); 
+}
+
+input[type="range"].quality-slider.is-yes::-webkit-slider-thumb {
+    transform: translateX(22px);
+}
+
+input[type="range"].quality-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+    transform: translateX(2px);
+}
+
+input[type="range"].quality-slider.is-yes::-moz-range-thumb {
+    transform: translateX(22px);
+}
+
+.slider-label.no { 
+    color: var(--c-text-secondary); 
+}
+.slider-label.yes { 
+    color: var(--c-text-secondary); 
+}
+
+.quality-slider-wrapper input[type="range"]:not(.is-yes) ~ .no,
+.quality-slider-wrapper input[type="range"].is-yes ~ .yes {
+    color: var(--c-text-primary);
+}
+/* FIM DAS REGRAS ATUALIZADAS */
 
 /* 5. ESTILOS DA PÁGINA DE APORTE ======================================== */
 .aporte-container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 24px; align-items: flex-start; }
