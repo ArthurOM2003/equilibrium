@@ -389,6 +389,10 @@ body.dark-mode .suggestion-item.sobra .ticker, body.dark-mode .suggestion-item.s
 #aporte-results-container .aporte-suggestion { padding: 16px; margin-bottom: 12px; border: 1px solid var(--c-border); }
 .aporte-suggestion-info .ticker { font-size: 1.1em; font-weight: 700; margin-bottom: 4px; }
 .aporte-suggestion-amount { font-size: 1.2em; font-weight: 700; color: var(--c-success); }
+.page-content {
+    margin-left: 12px;
+    margin-right: 12px;
+}
 
 /* 9. ESTILOS DE NOTIFICAÇÕES ======================= */
 .onboarding-card { display: flex; justify-content: space-between; align-items: center; background-color: var(--c-accent); color: #111827; padding: 16px 24px; margin-bottom: 24px; opacity: 0; transform: translateY(-20px); transition: opacity 0.5s ease, transform 0.5s ease; }
