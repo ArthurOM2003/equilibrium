@@ -7,12 +7,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@500;700&display=swap" rel="stylesheet">
-    <!-- Favicon com a silhueta da Serra do Curral -->
-   <link rel="apple-touch-icon" sizes="180x180" href="image/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="image/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="image/favicon-16x16.png">
-<link rel="manifest" href="site.webmanifest">
-<link rel="shortcut icon" href="image/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="image/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="image/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="image/favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="shortcut icon" href="image/favicon.ico">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -22,8 +21,7 @@
         <header class="navbar">
             <div class="container">
                  <a href="#" class="navbar-brand">
-                    <!-- Logo Horizonte Capital -->
-<img src="image/logo.svg" alt="Horizonte Capital Logo" width="128" height="64">
+                    <img src="image/logo.svg" alt="Horizonte Capital Logo" width="128" height="64">
                 </a>
                 <div class="header-controls">
                     <div class="user-info">
@@ -143,9 +141,14 @@
                     <div class="form-group"><label for="asset-price">Preço Atual (R$)</label><input type="number" id="asset-price" step="0.01" required></div>
                 </div>
                 <div id="dynamic-checklist-container" class="form-group checklist hidden">
-                    <h3>Checklist de Qualidade</h3>
-                    <div id="checklist-items"></div>
-                    <button type="button" id="add-question-in-modal-btn" class="btn btn-add-question">Adicionar Pergunta</button>
+                    <div class="checklist-header">
+                        <h3>Checklist de Qualidade</h3>
+                        <button type="button" id="manage-checklist-btn" class="btn-icon" title="Gerenciar Perguntas">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                    <div id="checklist-items">
+                        </div>
                 </div>
                 <div class="modal-actions">
                     <button type="button" id="cancel-btn" class="btn btn-secondary">
@@ -159,21 +162,39 @@
         </div>
     </div>
     
-    <div id="logout-modal" class="modal-overlay">
-        <div class="modal-content card" style="max-width: 400px;">
-            <h2 style="text-align: center;">Confirmar Saída</h2>
-            <p style="text-align: center; margin: 20px 0;">Você tem certeza que deseja sair e voltar para a página inicial?</p>
-            <div class="modal-actions" style="justify-content: center;">
-                <button id="cancel-logout-btn" class="btn btn-secondary">
-                    <span class="btn-text">Voltar</span>
+    <div id="checklist-manager-modal" class="modal-overlay">
+        <div class="modal-content card">
+            <button class="close-modal-btn">&times;</button>
+            <h2 id="checklist-manager-title">Gerenciar Checklist</h2>
+            <div id="checklist-manager-list">
+                </div>
+            <form id="add-question-form">
+                <div class="form-group">
+                    <label for="new-question-text">Nova Pergunta</label>
+                    <input type="text" id="new-question-text" placeholder="Escreva a nova pergunta e pressione Enter" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full-width">
+                    <span class="btn-text">Adicionar Pergunta</span>
                 </button>
-                <button id="confirm-logout-btn" class="btn btn-danger">
-                    <span class="btn-text">Confirmar Saída</span>
+            </form>
+            <div class="modal-actions">
+                <button type="button" id="checklist-manager-done-btn" class="btn btn-primary">
+                    <span class="btn-text">Concluído</span>
                 </button>
             </div>
         </div>
     </div>
 
+    <div id="logout-modal" class="modal-overlay">
+        <div class="modal-content card" style="max-width: 400px;">
+            <h2 style="text-align: center;">Confirmar Saída</h2>
+            <p style="text-align: center; margin: 20px 0;">Você tem certeza que deseja sair e voltar para a página inicial?</p>
+            <div class="modal-actions" style="justify-content: center;">
+                <button id="cancel-logout-btn" class="btn btn-secondary"><span class="btn-text">Voltar</span></button>
+                <button id="confirm-logout-btn" class="btn btn-danger"><span class="btn-text">Confirmar Saída</span></button>
+            </div>
+        </div>
+    </div>
     <div id="onboarding-modal" class="modal-overlay">
         <div class="modal-content card">
             <div id="onboarding-step-1" class="onboarding-step">

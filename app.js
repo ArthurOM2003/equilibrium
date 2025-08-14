@@ -22,6 +22,8 @@ const initializeApp = async (user) => {
     // --- DECLARAÇÕES DE VARIÁVEIS E REFERÊNCIAS ---
     let assets = [];
     let savedTargetAllocation = {};
+    // NOVO: Variável para armazenar todas as perguntas dos checklists
+    let checklistQuestions = {};
     let stagedTargetAllocation = {};
     let nextAssetId = 1;
     let currentPortfolioChart, targetPortfolioChart;
@@ -36,6 +38,7 @@ const initializeApp = async (user) => {
         'Default': '#A9A9A9'              // Cor padrão para novas classes
     };
 
+    // --- Referências do DOM ---
     const welcomeMessage = document.getElementById('welcome-message');
     const logoutBtn = document.getElementById('logout-btn');
     const logoutModal = document.getElementById('logout-modal');
@@ -56,6 +59,13 @@ const initializeApp = async (user) => {
     const saveAllocationBtn = document.getElementById('save-allocation-btn');
     const allocationWarning = document.getElementById('allocation-warning');
     const targetTotalDisplay = document.getElementById('target-total-display');
+    // NOVO: Referências para o modal de gerenciamento do checklist
+    const manageChecklistBtn = document.getElementById('manage-checklist-btn');
+    const checklistManagerModal = document.getElementById('checklist-manager-modal');
+    const checklistManagerListEl = document.getElementById('checklist-manager-list');
+    const addQuestionForm = document.getElementById('add-question-form');
+    const newQuestionInput = document.getElementById('new-question-text');
+    const checklistManagerDoneBtn = document.getElementById('checklist-manager-done-btn');
 
     // --- FUNÇÕES DE AJUDA E UTILITÁRIOS ---
     const showToast = (message, type = 'success') => {
@@ -123,9 +133,20 @@ const initializeApp = async (user) => {
             }
         });
     };
+    
+    // NOVO: Perguntas padrão para novos usuários
+    const getDefaultChecklists = () => ({
+        'Ações Nacionais': [ { id: 1, text: 'Dívida Líquida é negativa ou DL/PL < 50%?' }, { id: 2, text: 'ROE (Retorno sobre Patrimônio) histórico acima de 5%?' }, { id: 3, text: 'Dívida líquida é menor que o lucro líquido dos últimos 12 meses?' }, { id: 4, text: 'Tem crescimento de receitas ou lucro > 5% a.a. nos últimos 5 anos?' }, { id: 5, text: 'Possui um histórico consistente de pagamento de dividendos?' }, { id: 6, text: 'Investe consistentemente em pesquisa e inovação?' }, { id: 7, text: 'O setor é perene (não está se tornando obsoleto)?' }, { id: 8, text: 'Está negociada com um P/VP (Preço/Valor Patrimonial) abaixo de 5?' }, { id: 9, text: 'Teve lucro operacional no último exercício (ano)?' }, { id: 10, text: 'Tem mais de 30 anos de mercado (desde a fundação)?' }, { id: 11, text: 'É LÍDER (1º lugar) nacional ou mundial no seu setor?' }, { id: 12, text: 'O setor de atuação da empresa tem mais de 100 anos?' }, { id: 13, text: 'É considerada uma BLUE CHIP (empresa de grande porte e sólida)?' }, { id: 14, text: 'A empresa possui uma gestão bem avaliada pelo mercado?' }, { id: 15, text: 'É livre de escândalos de corrupção recentes?' }, { id: 16, text: 'É livre de controle estatal ou concentração em um único cliente?' }, { id: 17, text: 'O P/L (Preço/Lucro) da empresa está abaixo de 30?' } ],
+        'Ações Internacionais': [ { id: 18, text: 'A taxa de administração é inferior a 0,7% ao ano?' }, { id: 19, text: 'O gestor do fundo tem mais de 5 anos de experiência no mercado?' }, { id: 20, text: 'A carteira do ETF é composta por mais de 30 ativos diferentes?' }, { id: 21, text: 'Nenhum ativo individual representa mais de 20% do patrimônio total do fundo?' }, { id: 22, text: 'O ETF tem um patrimônio líquido sob gestão superior a R$ 100 milhões?' }, { id: 23, text: 'O Dividend Yield do fundo foi superior a 2,5% nos últimos 12 meses?' }, { id: 24, text: 'O foco do ETF está em setores considerados perenes e confiáveis (ex: financeiro, saúde, consumo básico, utilidades)?' } ],
+        'Fundos Imobiliários': [], // Começa vazio para o usuário adicionar
+        'Renda Fixa Nacional': [],
+        'Cripto': []
+    });
+
 
     // --- LÓGICA DE DADOS (FIREBASE) ---
     const portfolioRef = db.collection('portfolios').doc(user.uid);
+    // ATUALIZADO: Carrega os checklists junto com os outros dados
     const loadDataFromFirebase = async () => {
         try {
             const doc = await portfolioRef.get();
@@ -133,25 +154,35 @@ const initializeApp = async (user) => {
                 const data = doc.data();
                 assets = data.assets || [];
                 savedTargetAllocation = data.target || {};
+                // Carrega checklists do usuário ou usa os padrões
+                checklistQuestions = data.checklists || getDefaultChecklists();
             } else {
                 showToast(`Bem-vindo(a), ${user.displayName || 'investidor(a)'}!`, 'info');
                 const exampleData = {
-                    assets: [], // Começa com a carteira vazia
-                    target: { 'Cripto': 5, 'Ações Nacionais': 40, 'Renda Fixa Nacional': 10, 'Ações Internacionais': 35, 'Fundos Imobiliários': 10 }
+                    assets: [], 
+                    target: { 'Cripto': 5, 'Ações Nacionais': 40, 'Renda Fixa Nacional': 10, 'Ações Internacionais': 35, 'Fundos Imobiliários': 10 },
+                    checklists: getDefaultChecklists() // Salva os checklists padrão para novos usuários
                 };
                 await portfolioRef.set(exampleData);
                 assets = exampleData.assets;
                 savedTargetAllocation = exampleData.target;
-                handleOnboarding(); // Inicia o onboarding para novos usuários
+                checklistQuestions = exampleData.checklists;
+                handleOnboarding(); 
             }
         } catch (error) {
             console.error("Erro Crítico ao carregar dados:", error);
             showToast("Não foi possível carregar os dados da sua carteira.", "error");
         }
     };
+    
+    // ATUALIZADO: Salva os checklists junto com os outros dados
     const saveDataToFirebase = async () => {
         try {
-            await portfolioRef.set({ assets: assets, target: savedTargetAllocation });
+            await portfolioRef.set({ 
+                assets: assets, 
+                target: savedTargetAllocation,
+                checklists: checklistQuestions // Adiciona os checklists ao salvar
+            });
             return true;
         } catch (error) {
             console.error("Erro ao salvar dados:", error);
@@ -160,18 +191,15 @@ const initializeApp = async (user) => {
         }
     };
 
-    // --- CHECKLISTS ---
-    const nationalStockChecklistQuestions = [ { id: 1, text: 'Dívida Líquida é negativa ou DL/PL < 50%?' }, { id: 2, text: 'ROE (Retorno sobre Patrimônio) histórico acima de 5%?' }, { id: 3, text: 'Dívida líquida é menor que o lucro líquido dos últimos 12 meses?' }, { id: 4, text: 'Tem crescimento de receitas ou lucro > 5% a.a. nos últimos 5 anos?' }, { id: 5, text: 'Possui um histórico consistente de pagamento de dividendos?' }, { id: 6, text: 'Investe consistentemente em pesquisa e inovação?' }, { id: 7, text: 'O setor é perene (não está se tornando obsoleto)?' }, { id: 8, text: 'Está negociada com um P/VP (Preço/Valor Patrimonial) abaixo de 5?' }, { id: 9, text: 'Teve lucro operacional no último exercício (ano)?' }, { id: 10, text: 'Tem mais de 30 anos de mercado (desde a fundação)?' }, { id: 11, text: 'É LÍDER (1º lugar) nacional ou mundial no seu setor?' }, { id: 12, text: 'O setor de atuação da empresa tem mais de 100 anos?' }, { id: 13, text: 'É considerada uma BLUE CHIP (empresa de grande porte e sólida)?' }, { id: 14, text: 'A empresa possui uma gestão bem avaliada pelo mercado?' }, { id: 15, text: 'É livre de escândalos de corrupção recentes?' }, { id: 16, text: 'É livre de controle estatal ou concentração em um único cliente?' }, { id: 17, text: 'O P/L (Preço/Lucro) da empresa está abaixo de 30?' } ];
-    const internationalChecklistQuestions = [ { id: 1, text: 'A taxa de administração é inferior a 0,7% ao ano?' }, { id: 2, text: 'O gestor do fundo tem mais de 5 anos de experiência no mercado?' }, { id: 3, text: 'A carteira do ETF é composta por mais de 30 ativos diferentes?' }, { id: 4, text: 'Nenhum ativo individual representa mais de 20% do patrimônio total do fundo?' }, { id: 5, text: 'O ETF tem um patrimônio líquido sob gestão superior a R$ 100 milhões?' }, { id: 6, text: 'O Dividend Yield do fundo foi superior a 2,5% nos últimos 12 meses?' }, { id: 7, text: 'O foco do ETF está em setores considerados perenes e confiáveis (ex: financeiro, saúde, consumo básico, utilidades)?' } ];
+    // REMOVIDO: As variáveis com checklists hardcoded foram removidas
+    // const nationalStockChecklistQuestions = [...];
+    // const internationalChecklistQuestions = [...];
 
     // --- FUNÇÕES DE RENDERIZAÇÃO ---
     const initCharts = () => { const currentCtx = document.getElementById('currentPortfolioChart').getContext('2d'); currentPortfolioChart = new Chart(currentCtx, { type: 'doughnut', options: getChartOptions() }); const targetCtx = document.getElementById('targetPortfolioChart').getContext('2d'); targetPortfolioChart = new Chart(targetCtx, { type: 'doughnut', options: getChartOptions() }); };
     
-    // --- FUNÇÃO DE ATUALIZAÇÃO DO GRÁFICO MODIFICADA ---
     const updateChartData = (chart, labels, data) => { 
-        // Gera a lista de cores dinamicamente com base nos labels e no mapa de cores
         const backgroundColors = labels.map(label => assetClassColorMap[label] || assetClassColorMap['Default']);
-        
         chart.data.labels = labels; 
         chart.data.datasets = [{ 
             data: data, 
@@ -197,12 +225,10 @@ const initializeApp = async (user) => {
         }); 
         summaryEl.innerHTML = `<div class="portfolio-summary-total"><span>Valor Total da Carteira</span><strong class="sensitive-data">${totalPortfolioValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong></div><div class="portfolio-summary-breakdown"></div>`; 
         const breakdownContainer = summaryEl.querySelector('.portfolio-summary-breakdown'); 
-        
         if (Object.keys(classTotals).length === 0) {
             breakdownContainer.innerHTML = `<p class="placeholder-text" style="padding: 10px 0;">Nenhum ativo para resumir.</p>`;
             return;
         }
-
         Object.entries(classTotals).sort(([, a], [, b]) => b - a).forEach(([className, classValue]) => { 
             if (classValue >= 0) {
                 const itemEl = document.createElement('div'); 
@@ -287,8 +313,13 @@ const initializeApp = async (user) => {
         setButtonLoading(refreshPricesBtn, false);
     };
     
+    // ATUALIZADO: Renderiza o checklist com base na lista de perguntas fornecida
     const renderChecklistInModal = (questions) => {
         checklistItemsEl.innerHTML = '';
+        if (!questions || questions.length === 0) {
+            checklistItemsEl.innerHTML = `<p class="placeholder-text">Nenhuma pergunta definida para esta classe de ativos.</p>`;
+            return;
+        }
         questions.forEach(q => {
             const item = document.createElement('div');
             item.className = 'checklist-item';
@@ -308,6 +339,10 @@ const initializeApp = async (user) => {
         assetForm.reset();
         document.getElementById('asset-id').value = '';
         checklistContainer.classList.add('hidden');
+        
+        const selectedClass = asset ? asset.class : assetClassSelect.value;
+        const questionsForClass = checklistQuestions[selectedClass] || [];
+
         if (asset) {
             document.getElementById('modal-title').textContent = 'Editar Ativo';
             document.getElementById('asset-id').value = asset.id;
@@ -315,13 +350,11 @@ const initializeApp = async (user) => {
             document.getElementById('asset-class').value = asset.class;
             document.getElementById('asset-quantity').value = asset.quantity;
             document.getElementById('asset-price').value = asset.precoAtual;
-            let checklistToUse = [];
-            if (asset.class === 'Ações Nacionais') checklistToUse = nationalStockChecklistQuestions;
-            else if (asset.class === 'Ações Internacionais') checklistToUse = internationalChecklistQuestions;
-            if (checklistToUse.length > 0) {
-                renderChecklistInModal(checklistToUse);
+
+            if (questionsForClass.length > 0) {
+                renderChecklistInModal(questionsForClass);
                 checklistContainer.classList.remove('hidden');
-                checklistToUse.forEach(q => {
+                questionsForClass.forEach(q => {
                     const checkbox = checklistItemsEl.querySelector(`.quality-checkbox[data-id="${q.id}"]`);
                     if (checkbox && asset.questions) {
                         checkbox.checked = !!asset.questions[q.id];
@@ -330,7 +363,10 @@ const initializeApp = async (user) => {
             }
         } else {
             document.getElementById('modal-title').textContent = 'Adicionar Novo Ativo';
-            renderChecklistInModal(nationalStockChecklistQuestions);
+            if (questionsForClass.length > 0) {
+                renderChecklistInModal(questionsForClass);
+                checklistContainer.classList.remove('hidden');
+            }
         }
         modal.classList.add('active');
     };
@@ -341,24 +377,19 @@ const initializeApp = async (user) => {
         setButtonLoading(submitButton, true);
 
         const assetClass = document.getElementById('asset-class').value;
-        let checklistToUse = [];
-        if (assetClass === 'Ações Nacionais') checklistToUse = nationalStockChecklistQuestions;
-        else if (assetClass === 'Ações Internacionais') checklistToUse = internationalChecklistQuestions;
+        const questionsForClass = checklistQuestions[assetClass] || [];
 
-        let score = 0; const questionAnswers = {};
-        if (checklistToUse.length > 0) {
+        let score = 0; 
+        const questionAnswers = {};
+        if (questionsForClass.length > 0) {
             checklistItemsEl.querySelectorAll('.quality-checkbox').forEach(checkbox => {
-                const qId = Number(checkbox.dataset.id);
+                const qId = checkbox.dataset.id;
                 const isYes = checkbox.checked;
                 questionAnswers[qId] = isYes;
-                if (isYes) {
-                    score++;
-                } else {
-                    score--;
-                }
+                if (isYes) score++; else score--;
             });
         } else {
-            score = 10;
+            score = 10; // Nota padrão se não houver checklist
         }
 
         const idValue = document.getElementById('asset-id').value;
@@ -379,6 +410,88 @@ const initializeApp = async (user) => {
         setButtonLoading(submitButton, false);
     };
 
+    // --- LÓGICA DO GERENCIADOR DE CHECKLIST ---
+    // NOVO: Renderiza as perguntas no modal de gerenciamento
+    const renderChecklistManager = (assetClass) => {
+        checklistManagerListEl.innerHTML = '';
+        const questions = checklistQuestions[assetClass] || [];
+        if (questions.length === 0) {
+            checklistManagerListEl.innerHTML = `<p class="placeholder-text">Nenhuma pergunta. Adicione a primeira!</p>`;
+        } else {
+            questions.forEach(q => {
+                const item = document.createElement('div');
+                item.className = 'checklist-item';
+                item.dataset.id = q.id;
+                item.innerHTML = `
+                    <span>${q.text}</span>
+                    <button class="btn-icon btn-danger btn-delete-question" title="Remover Pergunta">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                `;
+                checklistManagerListEl.appendChild(item);
+            });
+        }
+    };
+    
+    // NOVO: Abre o modal de gerenciamento
+    manageChecklistBtn.addEventListener('click', () => {
+        const currentClass = assetClassSelect.value;
+        checklistManagerModal.dataset.class = currentClass; // Armazena a classe atual
+        document.getElementById('checklist-manager-title').textContent = `Gerenciar Checklist: ${currentClass}`;
+        renderChecklistManager(currentClass);
+        checklistManagerModal.classList.add('active');
+    });
+
+    // NOVO: Adiciona nova pergunta
+    addQuestionForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const assetClass = checklistManagerModal.dataset.class;
+        const newText = newQuestionInput.value.trim();
+        if (newText && assetClass) {
+            if (!checklistQuestions[assetClass]) {
+                checklistQuestions[assetClass] = [];
+            }
+            checklistQuestions[assetClass].push({ id: Date.now(), text: newText });
+            newQuestionInput.value = '';
+            renderChecklistManager(assetClass);
+        }
+    });
+
+    // NOVO: Remove uma pergunta
+    checklistManagerListEl.addEventListener('click', (e) => {
+        const deleteButton = e.target.closest('.btn-delete-question');
+        if (deleteButton) {
+            const assetClass = checklistManagerModal.dataset.class;
+            const questionItem = deleteButton.closest('.checklist-item');
+            const questionId = Number(questionItem.dataset.id);
+            if (assetClass && questionId) {
+                checklistQuestions[assetClass] = checklistQuestions[assetClass].filter(q => q.id !== questionId);
+                renderChecklistManager(assetClass);
+            }
+        }
+    });
+
+    // NOVO: Fecha o modal de gerenciamento e salva os dados
+    checklistManagerDoneBtn.addEventListener('click', async () => {
+        setButtonLoading(checklistManagerDoneBtn, true);
+        const success = await saveDataToFirebase();
+        if (success) {
+            showToast('Checklist atualizado com sucesso!', 'success');
+            // Re-renderiza o checklist no modal principal para refletir as mudanças
+            const currentClass = checklistManagerModal.dataset.class;
+            const questionsForClass = checklistQuestions[currentClass] || [];
+            renderChecklistInModal(questionsForClass);
+        }
+        checklistManagerModal.classList.remove('active');
+        setButtonLoading(checklistManagerDoneBtn, false);
+    });
+    // Adiciona evento para o botão de fechar no modal de checklist
+    checklistManagerModal.querySelector('.close-modal-btn').addEventListener('click', () => {
+        checklistManagerModal.classList.remove('active');
+    });
+
+
+    // --- Demais Funções ---
     const createAllocationSliders = () => {
         allocationSlidersEl.innerHTML = '';
         for (const className in stagedTargetAllocation) {
@@ -422,13 +535,17 @@ const initializeApp = async (user) => {
         }
     });
 
+    // ATUALIZADO: Agora busca as perguntas dinamicamente ao mudar a classe
     assetClassSelect.addEventListener('change', (e) => {
         const selectedClass = e.target.value;
-        let checklistToUse = [];
-        if (selectedClass === 'Ações Nacionais') checklistToUse = nationalStockChecklistQuestions;
-        else if (selectedClass === 'Ações Internacionais') checklistToUse = internationalChecklistQuestions;
-        if (checklistToUse.length > 0) { renderChecklistInModal(checklistToUse); checklistContainer.classList.remove('hidden'); } 
-        else { checklistContainer.classList.add('hidden'); }
+        const questionsForClass = checklistQuestions[selectedClass] || [];
+        
+        if (questionsForClass.length > 0) {
+            renderChecklistInModal(questionsForClass);
+            checklistContainer.classList.remove('hidden');
+        } else {
+            checklistContainer.classList.add('hidden');
+        }
     });
     
     allocationSlidersEl.addEventListener('input', (e) => {
@@ -469,7 +586,13 @@ const initializeApp = async (user) => {
         nextAssetId = assets.length > 0 ? Math.max(...assets.map(a => a.id).filter(id => !isNaN(id))) + 1 : 1;
         stagedTargetAllocation = { ...savedTargetAllocation };
         assetClassSelect.innerHTML = '';
-        Object.keys(savedTargetAllocation).forEach(key => assetClassSelect.add(new Option(key, key)));
+        Object.keys(savedTargetAllocation).forEach(key => {
+            assetClassSelect.add(new Option(key, key));
+            // Garante que todas as classes de alocação tenham uma entrada no checklist
+            if (checklistQuestions[key] === undefined) {
+                checklistQuestions[key] = [];
+            }
+        });
 
         initCharts();
         createAllocationSliders();
