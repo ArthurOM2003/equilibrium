@@ -257,7 +257,7 @@ body.dark-mode .theme-switcher .icon.moon { color: var(--c-accent); }
 .checklist-item div:first-child:hover .delete-question-btn { visibility: visible; }
 .hidden { display: none !important; }
 
-/* REGRAS ATUALIZADAS PARA O SLIDER DE QUALIDADE */
+/* REGRAS ATUALIZADAS E CORRIGIDAS PARA O SLIDER DE QUALIDADE */
 .quality-slider-wrapper { 
     display: flex; 
     align-items: center; 
@@ -295,6 +295,7 @@ input[type="range"].quality-slider::-webkit-slider-thumb {
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     transition: transform 0.3s ease;
     transform: translateX(2px);
+    margin-top: 2px; /* CORREÇÃO: Centraliza a bolinha verticalmente */
 }
 
 input[type="range"].quality-slider.is-yes { 
@@ -312,8 +313,7 @@ input[type="range"].quality-slider::-moz-range-thumb {
     border-radius: 50%;
     border: none;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-    transition: transform 0.3s ease;
-    transform: translateX(2px);
+    /* Firefox geralmente centraliza bem, então não precisa de margem */
 }
 
 input[type="range"].quality-slider.is-yes::-moz-range-thumb {
@@ -332,6 +332,7 @@ input[type="range"].quality-slider.is-yes::-moz-range-thumb {
     color: var(--c-text-primary);
 }
 /* FIM DAS REGRAS ATUALIZADAS */
+
 
 /* 5. ESTILOS DA PÁGINA DE APORTE ======================================== */
 .aporte-container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 24px; align-items: flex-start; }
