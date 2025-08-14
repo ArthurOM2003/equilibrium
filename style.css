@@ -100,7 +100,7 @@ h1, h2, h3, .navbar-brand {
     background-size: cover;
     background-position: center 70%;
     /* !! IMPORTANTE !! Mantenha a URL da sua imagem de fundo aqui */
-    background-image: url('https://images.unsplash.com/photo-1595899434842-13223b5a7644?q=80&w=2070&auto=format&fit=crop');
+    background-image: url('image/curral.png');
 }
 
 /* NOVO: Adiciona a sobreposição escura */
@@ -143,12 +143,12 @@ h1, h2, h3, .navbar-brand {
 /* --- SEPARADOR DE MONTANHA --- */
 .section-separator {
     height: 80px;
-    background: var(--c-bg);
+    background: #dddddd;
     clip-path: polygon(100% 100%, 0% 100%, 0% 50%, 8% 58%, 16% 50%, 25% 60%, 32% 52%, 40% 60%, 50% 50%, 60% 62%, 70% 52%, 80% 65%, 90% 55%, 100% 65%);
     margin-top: -1px;
 }
 body.dark-mode .section-separator {
-    background: #dddddd;
+    background: var(--c-surface);
 }
 
 
