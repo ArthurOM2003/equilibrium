@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horizonte Capital - Seu Investimento com Olhos no Futuro</title>
-    <!-- Favicon com a silhueta da Serra do Curral -->
+    <meta name="description" content="Organize e analise sua carteira de investimentos de forma visual e intuitiva. Defina metas, avalie ativos e otimize seus aportes com a Horizonte Capital.">
+    
     <link rel="apple-touch-icon" sizes="180x180" href="image/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="image/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="image/favicon-16x16.png">
-<link rel="manifest" href="site.webmanifest">
-<link rel="shortcut icon" href="image/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="image/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="image/favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="shortcut icon" href="image/favicon.ico">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@500;700&display=swap" rel="stylesheet">
 </head>
@@ -17,7 +18,6 @@
     <header class="navbar">
         <div class="container">
             <a href="#" class="navbar-brand">
-                <!-- Logo Horizonte Capital -->
                 <img src="image/logo.svg" alt="Horizonte Capital Logo" width="128" height="64">
             </a>
             <div class="nav-controls">
@@ -31,9 +31,9 @@
                     </label>
                 </div>
                 <nav class="navbar-nav">
-                    <button id="google-login-btn" class="btn btn-primary">
+                    <button id="google-login-btn" class="btn btn-secondary">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039L38.485 10.92C34.643 7.424 29.626 5 24 5C13.435 5 5 13.435 5 24s8.435 19 19 19s19-8.435 19-19c0-1.872-.29-3.665-.826-5.385z"/><path fill="#FF3D00" d="M6.306 14.691c-1.121 2.222-1.806 4.696-1.806 7.309s.685 5.087 1.806 7.309l-5.32 4.13A18.999 18.999 0 0 1 0 24c0-4.043 1.251-7.805 3.464-10.914l5.32-4.13z"/><path fill="#4CAF50" d="M24 48c5.166 0 9.86-1.977 13.409-5.192l-4.781-3.774A11.96 11.96 0 0 1 24 42c-4.817 0-8.94-3.13-10.637-7.468l-5.24 4.093A19.003 19.003 0 0 0 24 48z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-11.303 8c-4.323 0-8.1-2.61-9.941-6.38l-5.34 4.14A18.997 18.997 0 0 0 24 44c4.856 0 9.22-1.63 12.593-4.397l4.735 3.754c.264.208.583.332.923.332.229 0 .45-.06.65-.183a1.498 1.498 0 0 0 .89-1.916l-.21-1.396A19.019 19.019 0 0 0 48 24c0-1.872-.29-3.665-.826-5.385z"/></svg>
-                        <span>Login / Cadastrar com Google</span>
+                        <span>Login / Cadastrar</span>
                     </button>
                 </nav>
             </div>
@@ -43,46 +43,84 @@
     <main>
         <section class="hero">
             <div class="container text-center">
-                <!-- Texto de boas-vindas com tom mineiro -->
                 <h1>Bem-vindo ao Horizonte Capital</h1>
                 <p class="subtitle">Seu investimento com os pés nas montanhas e os olhos no futuro.</p>
                 <a href="#" onclick="document.getElementById('google-login-btn').click(); return false;" class="btn btn-primary btn-lg">Comece a Usar Gratuitamente</a>
             </div>
         </section>
         
-        <!-- Separador de seção em formato de montanha -->
         <div class="section-separator"></div>
 
         <section id="features" class="features-section">
             <div class="container">
-                <h2 class="section-title">Por que usar a Horizonte Capital?</h2>
+                <h2 class="section-title">A solidez que seus investimentos precisam</h2>
                 <div class="features-grid">
-                    <div class="feature-card"><h3>Gestão Simplificada</h3><p>Adicione, edite e remova seus ativos com facilidade. Tenha uma visão clara de todos os seus investimentos em um só lugar.</p></div>
-                    <div class="feature-card"><h3>Análise de Qualidade</h3><p>Use um sistema de checklist personalizável para atribuir uma nota de qualidade a cada ação, ajudando na sua tomada de decisão.</p></div>
-                    <div class="feature-card"><h3>Balanceamento Visual</h3><p>Defina suas metas de alocação e compare com sua carteira atual através de gráficos modernos e interativos.</p></div>
-                    <div class="feature-card"><h3>Interface Inspiradora</h3><p>Desfrute de uma experiência de uso agradável, com um design limpo e inspirado na beleza e solidez de Minas Gerais.</p></div>
+                    <div class="feature-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <h3>Gestão Simplificada</h3>
+                        <p>Adicione, edite e remova seus ativos com facilidade. Tenha uma visão clara de todos os seus investimentos em um só lugar.</p>
+                    </div>
+                    <div class="feature-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <h3>Análise de Qualidade</h3>
+                        <p>Use um sistema de checklist para atribuir uma nota de qualidade a cada ação, ajudando na sua tomada de decisão.</p>
+                    </div>
+                    <div class="feature-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M18.7 8a6 6 0 0 0-8.4 0L4 18"></path><path d="M12 12v6h6"></path></svg>
+                        <h3>Balanceamento Visual</h3>
+                        <p>Defina suas metas de alocação e compare com sua carteira atual através de gráficos modernos e interativos.</p>
+                    </div>
+                    <div class="feature-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v8m4-4H8m13.88-4.12a1.5 1.5 0 0 0-2.12 0l-1.88 1.88a1.5 1.5 0 0 0 0 2.12l7.12 7.12a1.5 1.5 0 0 0 2.12 0l1.88-1.88a1.5 1.5 0 0 0 0-2.12z"></path></svg>
+                        <h3>Aporte Inteligente</h3>
+                        <p>Com base em suas metas e na qualidade dos ativos, a ferramenta calcula e sugere onde fazer seu próximo aporte.</p>
+                    </div>
                 </div>
             </div>
         </section>
+
+        <section id="tutorial" class="tutorial-section">
+            <div class="container">
+                <h2 class="section-title">Um guia rápido para o topo</h2>
+                <div class="tutorial-grid">
+                    
+                    <div class="tutorial-step">
+                        <div class="step-number">1</div>
+                        <img src="https://via.placeholder.com/400x250/4B6B50/FFFFFF?text=Tela+de+Alocação" alt="Tela de definição de alocação de ativos.">
+                        <h3>Defina sua Alocação Ideal</h3>
+                        <p><strong>Como?</strong> Use os sliders na tela principal para definir a porcentagem que você deseja ter em cada classe de ativo (Ações, FIIs, etc.). A soma deve ser 100%.</p>
+                        <p><strong>Por quê?</strong> Esta é a sua "estratégia-mãe". Definir uma meta clara é o passo mais importante para construir uma carteira resiliente e alinhada com seus objetivos, evitando decisões emocionais.</p>
+                    </div>
+
+                    <div class="tutorial-step">
+                        <div class="step-number">2</div>
+                        <img src="https://via.placeholder.com/400x250/BFA14A/FFFFFF?text=Tela+de+Cadastro+de+Ativo" alt="Modal de cadastro de um novo ativo com o checklist de qualidade.">
+                        <h3>Cadastre e Avalie Seus Ativos</h3>
+                        <p><strong>Como?</strong> Clique em "Adicionar Ativo" e preencha as informações: ticker, quantidade e preço. Use o checklist de qualidade para dar uma nota ao seu ativo, respondendo "Sim" ou "Não" para os critérios.</p>
+                        <p><strong>Por quê?</strong> Ter um inventário completo é essencial. A nota de qualidade ajuda a diferenciar os ativos "bons" dos "excelentes" dentro da sua própria carteira, um fator crucial para a próxima etapa.</p>
+                    </div>
+
+                    <div class="tutorial-step">
+                        <div class="step-number">3</div>
+                        <img src="https://via.placeholder.com/400x250/A0522D/FFFFFF?text=Tela+de+Cálculo+de+Aporte" alt="Resultado do cálculo de aporte ideal.">
+                        <h3>Calcule o Aporte Ideal</h3>
+                        <p><strong>Como?</strong> Clique em "Calcular Aporte Ideal", informe o valor que deseja investir, e a ferramenta fará o resto. Ela mostrará exatamente em qual ativo você deve aportar para rebalancear sua carteira.</p>
+                        <p><strong>Por quê?</strong> A ferramenta cruza três dados: sua meta, sua posição atual e a qualidade de cada ativo. Ela prioriza o aporte na classe mais defasada, mas dentro dela, sugere o ativo de maior qualidade, garantindo que seu dinheiro vá sempre para a melhor oportunidade.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <footer class="legal-footer">
-        <p>
-            <strong>AVISO IMPORTANTE:</strong> As informações e ferramentas disponibilizadas neste site servem 
-            <strong>exclusivamente para fins de organização, estudo e acompanhamento pessoal de seus investimentos.</strong>
-        </p>
-        <p>
-            O conteúdo apresentado <strong>NÃO constitui e NÃO deve ser interpretado como uma recomendação, oferta,
-            análise ou conselho de compra, venda ou manutenção de qualquer valor mobiliário</strong> ou instrumento financeiro.
-            A decisão final de investimento é de responsabilidade exclusiva do usuário.
-        </p>
-        <p>
-            A performance passada não é garantia de resultados futuros. Invista com consciência.
-        </p>
-        <p>
-            <a href="/politica-de-privacidade.html">Política de Privacidade</a> | <a href="/termos-de-uso.html">Termos de Uso</a>
-        </p>
+        <p><strong>AVISO IMPORTANTE:</strong> As informações e ferramentas disponibilizadas neste site servem <strong>exclusivamente para fins de organização, estudo e acompanhamento pessoal de seus investimentos.</strong></p>
+        <p>O conteúdo apresentado <strong>NÃO constitui e NÃO deve ser interpretado como uma recomendação, oferta, análise ou conselho de compra, venda ou manutenção de qualquer valor mobiliário</strong> ou instrumento financeiro. A decisão final de investimento é de responsabilidade exclusiva do usuário.</p>
+        <p>A performance passada não é garantia de resultados futuros. Invista com consciência.</p>
+        <p><a href="/politica-de-privacidade.html">Política de Privacidade</a> | <a href="/termos-de-uso.html">Termos de Uso</a></p>
     </footer>
+    
     <script src="firebase-config.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth-compat.js"></script>
