@@ -95,7 +95,7 @@ h1, h2, h3, .navbar-brand {
 /* --- HERO SECTION COM IMAGEM DE FUNDO E MELHOR CONTRASTE --- */
 .hero { 
     padding: 80px 0 120px 0;
-    color: var(--c-bg); /* ALTERADO: Cor do texto principal para branco/bege */
+    color: #FFFFFF; /* ALTERADO: Cor do texto principal para branco/bege */
     position: relative; /* Necessário para o overlay */
     background-size: cover;
     background-position: center 70%;
